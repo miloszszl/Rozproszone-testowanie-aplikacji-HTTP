@@ -18,7 +18,7 @@ namespace client
             var watch = System.Diagnostics.Stopwatch.StartNew();
             htmlCode= client.DownloadString(address);
             watch.Stop();
-
+            
             var elapsedMs = watch.ElapsedMilliseconds;
             Form2 f2 = new Form2();
 

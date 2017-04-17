@@ -8,3 +8,13 @@ C:\Users\Miłosz\Desktop\client_app\client\client\obj\Debug\client.csproj.Genera
 C:\Users\Miłosz\Desktop\client_app\client\client\obj\Debug\client.exe
 C:\Users\Miłosz\Desktop\client_app\client\client\obj\Debug\client.pdb
 C:\Users\Miłosz\Desktop\client_app\client\client\obj\Debug\client.Form2.resources
+C:\Users\Miłosz\Desktop\projekt_zesp\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\bin\Debug\client.exe.config
+C:\Users\Miłosz\Desktop\projekt_zesp\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\bin\Debug\client.exe
+C:\Users\Miłosz\Desktop\projekt_zesp\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\bin\Debug\client.pdb
+C:\Users\Miłosz\Desktop\projekt_zesp\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\obj\Debug\client.csprojResolveAssemblyReference.cache
+C:\Users\Miłosz\Desktop\projekt_zesp\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\obj\Debug\client.Form1.resources
+C:\Users\Miłosz\Desktop\projekt_zesp\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\obj\Debug\client.Form2.resources
+C:\Users\Miłosz\Desktop\projekt_zesp\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\obj\Debug\client.Properties.Resources.resources
+C:\Users\Miłosz\Desktop\projekt_zesp\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\obj\Debug\client.csproj.GenerateResource.Cache
+C:\Users\Miłosz\Desktop\projekt_zesp\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\obj\Debug\client.exe
+C:\Users\Miłosz\Desktop\projekt_zesp\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\obj\Debug\client.pdb

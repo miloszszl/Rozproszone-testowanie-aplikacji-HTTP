@@ -64,6 +64,7 @@ namespace client
                 {
                     x.Enabled = false;
                 }
+                button2.Enabled = false;
 
                 List<String> a= GetAddresses();
 
@@ -83,7 +84,7 @@ namespace client
                 {
                     x.Enabled = true;
                 }
-                    
+                button2.Enabled = true;
             }
             
         }
