@@ -8,6 +8,7 @@ C:\Users\Miłosz\Desktop\client_app\client\client\obj\Debug\client.csproj.Genera
 C:\Users\Miłosz\Desktop\client_app\client\client\obj\Debug\client.exe
 C:\Users\Miłosz\Desktop\client_app\client\client\obj\Debug\client.pdb
 C:\Users\Miłosz\Desktop\client_app\client\client\obj\Debug\client.Form2.resources
+<<<<<<< ba279e22795cc5a18089f070c10b352008d9eff5
 C:\Users\Miłosz\Desktop\projekt_zesp\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\bin\Debug\client.exe.config
 C:\Users\Miłosz\Desktop\projekt_zesp\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\bin\Debug\client.exe
 C:\Users\Miłosz\Desktop\projekt_zesp\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\bin\Debug\client.pdb
@@ -18,3 +19,21 @@ C:\Users\Miłosz\Desktop\projekt_zesp\Rozproszone-testowanie-aplikacji-HTTP\clie
 C:\Users\Miłosz\Desktop\projekt_zesp\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\obj\Debug\client.csproj.GenerateResource.Cache
 C:\Users\Miłosz\Desktop\projekt_zesp\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\obj\Debug\client.exe
 C:\Users\Miłosz\Desktop\projekt_zesp\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\obj\Debug\client.pdb
+=======
+D:\Project HTTP\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\bin\Debug\client.exe.config
+D:\Project HTTP\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\obj\Debug\client.exe
+D:\Project HTTP\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\obj\Debug\client.pdb
+D:\Project HTTP\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\bin\Debug\client.exe
+D:\Project HTTP\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\bin\Debug\client.pdb
+D:\Project HTTP\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\bin\Debug\Selenium.WebDriverBackedSelenium.dll
+D:\Project HTTP\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\bin\Debug\WebDriver.dll
+D:\Project HTTP\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\bin\Debug\WebDriver.Support.dll
+D:\Project HTTP\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\bin\Debug\Selenium.WebDriverBackedSelenium.xml
+D:\Project HTTP\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\bin\Debug\WebDriver.xml
+D:\Project HTTP\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\bin\Debug\WebDriver.Support.xml
+D:\Project HTTP\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\obj\Debug\client.csprojResolveAssemblyReference.cache
+D:\Project HTTP\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\obj\Debug\client.Form1.resources
+D:\Project HTTP\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\obj\Debug\client.Form2.resources
+D:\Project HTTP\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\obj\Debug\client.Properties.Resources.resources
+D:\Project HTTP\Rozproszone-testowanie-aplikacji-HTTP\client_app\client\client\obj\Debug\client.csproj.GenerateResource.Cache
+>>>>>>> Dodanie obsługi przeglądarki
