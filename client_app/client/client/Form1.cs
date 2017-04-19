@@ -12,19 +12,33 @@ namespace client
 {
     public partial class Form1 : Form
     {
-        int top = 25;
+        int top = 30;
         int left = 25;
+        int distance_y = 5;
+        int distance_x = 20;
         int limit = 10;
         int counter = 0;
+
         bool test_clicked = false;
-        List<TextBox> t_list = new List<TextBox>();
+
+        Dictionary<TextBox, TextBox> t_dict = new Dictionary<TextBox, TextBox>();
 
         private List<String> GetAddresses()
         {
             List<String> a = new List<String>();
-            foreach (var x in t_list)
+            foreach (var x in t_dict)
             {
-                a.Add(x.Text);
+                a.Add(x.Key.Text);
+            }
+            return a;
+        }
+
+        private Dictionary<TextBox, TextBox> GetAddressesAndLevels()
+        {
+            Dictionary<TextBox, TextBox> a = new Dictionary<TextBox, TextBox>();
+            foreach (var x in t_dict)
+            {
+                a[x.Key] = x.Value;
             }
             return a;
         }
@@ -35,10 +49,18 @@ namespace client
             TextBox textbox = new TextBox();
             textbox.Left = left;
             textbox.Top = top;
-            textbox.Width = 225;
-            t_list.Add(textbox);
+            textbox.Width = 290;
+            
             this.groupBox1.Controls.Add(textbox);
-            top += textbox.Height + 4;
+
+            TextBox textbox1 = new TextBox();
+            textbox1.Left = left+290+distance_x;
+            textbox1.Top = top;
+            textbox1.Width = 40;
+            this.groupBox1.Controls.Add(textbox1);
+            t_dict[textbox] = textbox1;
+            top += textbox.Height + distance_y;
+
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -60,9 +82,10 @@ namespace client
                 button1.Text = "STOP";
                 test_clicked = true;
 
-                foreach (var x in t_list)
+                foreach (var x in t_dict)
                 {
-                    x.Enabled = false;
+                    x.Key.Enabled = false;
+                    x.Value.Enabled = false;
                 }
                 button2.Enabled = false;
 
@@ -80,9 +103,10 @@ namespace client
                 button1.Text = "TEST";
                 test_clicked = false;
 
-                foreach (var x in t_list)
+                foreach (var x in t_dict)
                 {
-                    x.Enabled = true;
+                    x.Key.Enabled = true;
+                    x.Value.Enabled = true;
                 }
                 button2.Enabled = true;
             }
@@ -102,11 +126,17 @@ namespace client
                     TextBox textbox = new TextBox();
                     textbox.Left = left;
                     textbox.Top = top;
-                    textbox.Width = 225;
-                    t_list.Add(textbox);
+                    textbox.Width = 290;
                     this.groupBox1.Controls.Add(textbox);
-                    top += textbox.Height + 4;
-            }
+
+                    TextBox textbox1 = new TextBox();
+                    textbox1.Left = left + 290 + distance_x;
+                    textbox1.Top = top;
+                    textbox1.Width = 40;
+                    this.groupBox1.Controls.Add(textbox1);
+                    t_dict[textbox] = textbox1;
+                    top += textbox.Height + distance_y;
+                }
 
 
         }
@@ -133,6 +163,11 @@ namespace client
         }
 
         private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label2_Click(object sender, EventArgs e)
         {
 
         }
