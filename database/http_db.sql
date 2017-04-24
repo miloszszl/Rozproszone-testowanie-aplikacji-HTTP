@@ -181,6 +181,9 @@ CREATE TABLE `pages` (
   `id_pages` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `address` varchar(2048) COLLATE utf8_polish_ci NOT NULL,
   `ipv4` varchar(15) CHARACTER SET utf8 DEFAULT NULL,
+  `weight_kB` int(25) DEFAULT NULL,
+  `encoding` varchar(45) COLLATE utf8_polish_ci DEFAULT NULL,
+  `cookies_present` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id_pages`),
   UNIQUE KEY `id_pages_UNIQUE` (`id_pages`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
@@ -208,6 +211,9 @@ CREATE TABLE `pages_tests` (
   `id_pages` int(10) unsigned NOT NULL,
   `with_pictures` tinyint(1) DEFAULT '0',
   `id_servers` int(10) unsigned DEFAULT NULL,
+  `avg_download_time_ms` int(25) DEFAULT NULL,
+  `redirection` varchar(500) COLLATE utf8_polish_ci DEFAULT NULL,
+  `response_code` int(3) DEFAULT NULL,
   PRIMARY KEY (`id_pages_tests`),
   UNIQUE KEY `pages_tests_UNIQUE` (`id_pages_tests`),
   KEY `id_servers_idx` (`id_servers`),
@@ -342,4 +348,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-16 14:17:24
+-- Dump completed on 2017-04-24 11:53:33
