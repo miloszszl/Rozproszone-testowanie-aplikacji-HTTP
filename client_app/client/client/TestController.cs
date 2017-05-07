@@ -37,36 +37,46 @@ namespace client
             WaitForReady();
 
             var buttons = driver.FindElements(By.XPath("//button"));
-            try
-            {
-                var tmp = driver.Url;
-                foreach (IWebElement button in buttons)
-                {
-                    while(!button.Enabled)
-                        Thread.Sleep(50);
-                    if (button.Displayed)
-                    {
-                    ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView(true);", button);
-                    button.Click();
-                    if(driver.Url != tmp)
-                        driver.Navigate().Back();
-                        WaitForReady();
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Przycisk nie jest klikalny", e);
-            }
+            var a = driver.FindElements(By.XPath("//a"));
+            var input = driver.FindElements(By.XPath("//input"));
+
+            Check(buttons);
+            Check(a);
+            Check(input);
 
         }
 
         public void WaitForReady()
-        {
+        {   
             while ((long)((IJavaScriptExecutor) driver).ExecuteScript("return jQuery.active") != 0)
             {
                 Thread.Sleep(50);
             }
+        }
+
+        private void Check(IReadOnlyCollection<IWebElement> collection )
+        {
+                try
+                {
+                    var tmp = driver.Url;
+                    foreach (IWebElement button in collection)
+                    {
+                        while (!button.Enabled)
+                            Thread.Sleep(50);
+                        if (button.Displayed)
+                        {
+                            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView(true);", button);
+                            button.Click();
+                            if (driver.Url != tmp)
+                                driver.Navigate().Back();
+                            WaitForReady();
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    //TODO: ZALOGOWANIE W TABLICY BŁĘDU
+                }
         }
     }
 }
