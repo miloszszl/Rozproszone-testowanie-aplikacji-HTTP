@@ -12,11 +12,11 @@ namespace client
 {
     public class TestController
     {
-        public List<String> Addresses { get; set; }
+        public List<string> Addresses { get; set; }
         private IWebDriver driver;
         WebDriverWait wait;
 
-        public TestController(List<String> addresses)
+        public TestController(List<string> addresses)
         {
             this.Addresses = addresses;
         }
@@ -25,13 +25,18 @@ namespace client
         {
            // WebPageDownloader wbd = new WebPageDownloader();
            // wbd.TestDownload("https://www.google.pl/");
+
             driver =  new ChromeDriver();
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
             List<string> adr = new List<string>();
-            adr.Add("www.google.pl");
+            adr.Add("asd");
 
             var x = new TestController(adr);
 
+            //foreach(string el in adr)
+            //{
+            //    driver.Navigate().GoToUrl(el);
+            //}
             driver.Manage().Window.Maximize();
             driver.Navigate().GoToUrl("http://www.wp.pl/");
             WaitForReady();
