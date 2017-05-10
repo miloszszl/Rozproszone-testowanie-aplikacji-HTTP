@@ -15,7 +15,7 @@ from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from rest_framework import viewsets
 from .serializers import UserSerializer,TestSerializer,PageSerializer,Page_TestSerializer,\
-    Page_ConnectionSerializer,T_P_BSerializer,ButtonSerializer,Page_HostSerializer,BatchSerializer
+    Page_ConnectionSerializer,T_P_BSerializer,ButtonSerializer,Page_HostSerializer,BatchSerializer,PageAddressSerializer
 
 # Create your views here.
 def main_page(request):
@@ -310,6 +310,47 @@ def pages_search(request):
 
 #####################API
 
-class BVS(viewsets.ModelViewSet):
+class BVS(viewsets.ModelViewSet):       #ok
     queryset = Button.objects.all()
     serializer_class = ButtonSerializer
+
+
+class PVS(viewsets.ModelViewSet):       #ok
+    queryset = Page.objects.all()
+    serializer_class = PageSerializer
+
+
+class AVS(viewsets.ModelViewSet):       #ok
+    queryset = Page.objects.all()
+    serializer_class = PageAddressSerializer
+
+
+class CVS(viewsets.ModelViewSet):       #ok
+    queryset = Page_Connection.objects.all()
+    serializer_class = Page_ConnectionSerializer
+
+
+class PHVS(viewsets.ModelViewSet):          #ok
+    queryset = Page_Host.objects.all()
+    serializer_class = Page_HostSerializer
+
+
+class PTVS(viewsets.ModelViewSet):          #ok
+    queryset = Page_Test.objects.all()
+    serializer_class = Page_TestSerializer
+
+
+class BAVS(viewsets.ModelViewSet):          #ok
+    queryset = Batch.objects.all()
+    serializer_class = BatchSerializer
+
+
+class TVS(viewsets.ModelViewSet):
+    queryset = Test.objects.all()
+    serializer_class = TestSerializer
+
+
+class UVS(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+

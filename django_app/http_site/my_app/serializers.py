@@ -2,6 +2,13 @@ from rest_framework import serializers
 from .models import User,Test,Page,Page_Test,Page_Connection,T_P_B,Button,Page_Host,Batch
 
 
+class Page_HostSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model=Page_Host
+        fields=('domain_name','ipv4')
+
+
 class PageAddressSerializer(serializers.ModelSerializer):
     class Meta:
         model=Page
@@ -9,11 +16,11 @@ class PageAddressSerializer(serializers.ModelSerializer):
 
 
 class Page_ConnectionSerializer(serializers.ModelSerializer):
-    connected_page=PageAddressSerializer()
+    page_2 = PageAddressSerializer()
 
     class Meta:
         model=Page_Connection
-        fields=('connected_page',)
+        fields=('page_2',)
 
 
 class T_P_BSerializer(serializers.ModelSerializer):
@@ -30,13 +37,14 @@ class ButtonSerializer(serializers.ModelSerializer):
 
 
 class PageSerializer(serializers.ModelSerializer):
-    page_connections=Page_ConnectionSerializer(many=True)
-    buttons=ButtonSerializer(many=True)
+    page_connections=Page_ConnectionSerializer(source='page_connection_1',many=True)
+    buttons=ButtonSerializer(source='button_p',many=True)
+    host=Page_HostSerializer()
 
     class Meta:
         model=Page
         fields=('address','weight','encoding','cookies_present','avg_download_time',
-                'force_test','weight_w_pictures','host','page_connections','buttons')
+                'force_test','weight_w_pictures','host','page_connections','buttons','host')
 
 class Page_TestSerializer(serializers.ModelSerializer):
     page=PageSerializer()
@@ -49,7 +57,7 @@ class Page_TestSerializer(serializers.ModelSerializer):
 
 
 class BatchSerializer(serializers.ModelSerializer):
-    page=PageSerializer()
+    page=PageAddressSerializer()
 
     class Meta:
         model=Batch
@@ -57,12 +65,12 @@ class BatchSerializer(serializers.ModelSerializer):
 
 
 class TestSerializer(serializers.ModelSerializer):
-    PagesTests=Page_TestSerializer(source='page_test_t',many=True)
-    Batch=BatchSerializer(source='batch_t')
+    pages_tests=Page_TestSerializer(source='page_test_t',many=True)
+    batch=BatchSerializer(source='batch_t')
 
     class Meta:
         model=Test
-        fields=('date','batch','page_test')
+        fields=('date','batch','pages_tests')
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -74,12 +82,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 
-class Page_HostSerializer(serializers.ModelSerializer):
-    pages=PageSerializer(many=True)
 
-    class Meta:
-        model=Page_Host
-        fields=('domain_name','ipv4')
 
 
 

@@ -7,6 +7,14 @@ from rest_framework import routers
 
 router = routers.DefaultRouter()
 router.register(r'buttons', views.BVS)
+router.register(r'pages', views.PVS)
+router.register(r'addresses', views.AVS)
+router.register(r'connections', views.CVS)
+router.register(r'hosts', views.PHVS)
+router.register(r'batch', views.BAVS)
+router.register(r'pt', views.PTVS)
+router.register(r't', views.TVS)
+router.register(r'u', views.UVS)
 
 urlpatterns = [
     url(r'^api/', include(router.urls)),
