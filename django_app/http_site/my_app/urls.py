@@ -1,11 +1,15 @@
-from django.conf.urls import url
+from django.conf.urls import url,include
 from . import views
 from .views import RespCodeChartData,TimeChartData
 from django.views.generic.base import TemplateView
 from django.contrib.auth import views as auth_views
+from rest_framework import routers
 
+router = routers.DefaultRouter()
+router.register(r'buttons', views.BVS)
 
 urlpatterns = [
+    url(r'^api/', include(router.urls)),
     url(r'^$', views.main_page, name='main_page'),
     url(r'^users/$', views.users_list, name='users_list'),
     url(r'^users/$', views.users_list, name='users_list'),

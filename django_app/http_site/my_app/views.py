@@ -13,6 +13,9 @@ from django.utils.decorators import method_decorator
 import re
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from rest_framework import viewsets
+from .serializers import UserSerializer,TestSerializer,PageSerializer,Page_TestSerializer,\
+    Page_ConnectionSerializer,T_P_BSerializer,ButtonSerializer,Page_HostSerializer,BatchSerializer
 
 # Create your views here.
 def main_page(request):
@@ -303,3 +306,10 @@ def pages_search(request):
         found_entries = Page.objects.filter(entry_query).order_by('address')
 
     return render(request,'my_app/pages_list.html',{'query_string': query_string, 'pages': found_entries})
+
+
+#####################API
+
+class BVS(viewsets.ModelViewSet):
+    queryset = Button.objects.all()
+    serializer_class = ButtonSerializer
