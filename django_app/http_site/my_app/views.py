@@ -15,7 +15,8 @@ from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from rest_framework import viewsets
 from .serializers import UserSerializer,TestSerializer,PageSerializer,Page_TestSerializer,\
-    Page_ConnectionSerializer,T_P_BSerializer,ButtonSerializer,Page_HostSerializer,BatchSerializer,PageAddressSerializer
+    Page_ConnectionSerializer,T_P_BSerializer,ButtonSerializer,Page_HostSerializer,BatchSerializer,PageAddressSerializer,\
+    Page_For_ClientSerializer
 
 # Create your views here.
 def main_page(request):
@@ -85,47 +86,45 @@ def page_detail(request,pk):
             links.append(c.page_2)
 
     buttons = Button.objects.filter(page=pk)
-    for b in buttons:
-        button_tests=T_P_B.objects.filter(button=b.pk)
-        correct=0;
-        for b_test in button_tests:
-            if b_test.is_working==True:
-                correct+=1
-
-        button_working_percentage = None
-        b_test_len=len(button_tests)
-        if b_test_len>0:
-            button_working_percentage=(correct*100.0)/len(button_tests)
-
-        b.bb=button_working_percentage
+    # for b in buttons:
+    #     button_tests=T_P_B.objects.filter(button=b.pk)
+    #     correct=0;
+    #     for b_test in button_tests:
+    #         if b_test.is_working==True:
+    #             correct+=1
+    #
+    #     button_working_percentage = None
+    #     b_test_len=len(button_tests)
+    #     if b_test_len>0:
+    #         button_working_percentage=(correct*100.0)/len(button_tests)
+    #
+    #     b.bb=button_working_percentage
 
     #is working % and redirection %
     pt=Page_Test.objects.filter(page=pk)
     tests_quantity=len(pt)
-    pt_len=len(pt)
-    if pt_len==0:
-        is_working_percentage=None
-        redirection_percentage=None
-    else:
-        is_working = 0
-        redirections = 0
-        for x in pt:
-            if x.is_working == True:
-                is_working += 1
-            if not(x.redirection is None or x.redirection == ""):
-                redirections += 1
-
-        is_working_percentage=(is_working*100.0)/pt_len
-        redirection_percentage=(redirections*100.0)/pt_len
+    # pt_len=len(pt)
+    # if pt_len==0:
+    #     is_working_percentage=None
+    #     redirection_percentage=None
+    # else:
+    #     is_working = 0
+    #     redirections = 0
+    #     for x in pt:
+    #         if x.is_working == True:
+    #             is_working += 1
+    #         if not(x.redirection is None or x.redirection == ""):
+    #             redirections += 1
+    #
+    #     is_working_percentage=(is_working*100.0)/pt_len
+    #     redirection_percentage=(redirections*100.0)/pt_len
 
     pages_tests = Page_Test.objects.filter(page=pk)
     for pt in pages_tests:
         pt.t_p_b_pt = T_P_B.objects.filter(page_test=pt.pk)
 
-    return render(request, 'my_app/page_detail.html', {'page':page,'links':links,'buttons':buttons,
-                                                       'is_working_percentage':is_working_percentage,
-                                                       'redirection_percentage':redirection_percentage,
-                                                       'tests_quantity':tests_quantity,
+    return render(request, 'my_app/page_detail.html', {'page':page,'links':links,'buttons':buttons,     #'is_working_percentage':is_working_percentage,
+                                                       'tests_quantity':tests_quantity,                 #'redirection_percentage':redirection_percentage,
                                                        'pages_tests':pages_tests})
 
 
@@ -168,18 +167,18 @@ def button_detail(request,button_pk,page_pk):
     button = get_object_or_404(Button, pk=button_pk)
     button_tests = T_P_B.objects.filter(button=button.pk)
 
-    tests_quantity=len(button_tests)
-    correct = 0;
-    for b_test in button_tests:
-        if b_test.is_working == True:
-            correct += 1
-
     button_working_percentage = None
-    b_test_len = len(button_tests)
-    if b_test_len > 0:
-        button_working_percentage = (correct * 100.0) / len(button_tests)
 
-    button.bb = button_working_percentage
+    tests_quantity=len(button_tests)
+    # if tests_quantity > 0:
+    #     correct = 0;
+    #     for b_test in button_tests:
+    #         if b_test.is_working == True:
+    #             correct += 1
+    #
+    #     button_working_percentage = (correct * 100.0) / len(button_tests)
+    #
+    # button.bb = button_working_percentage
 
     return render(request, 'my_app/button_detail.html', {'button': button,'tests_quantity':tests_quantity})
 
@@ -309,6 +308,14 @@ def pages_search(request):
 
 
 #####################API
+
+class PageForClientViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = Page_For_ClientSerializer
+
+    def get_queryset(self):
+        addr=self.kwargs['addr']
+        return Page.objects.filter(address=addr)
+
 
 class BVS(viewsets.ModelViewSet):       #ok
     queryset = Button.objects.all()

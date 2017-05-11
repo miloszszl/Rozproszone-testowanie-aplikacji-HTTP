@@ -17,21 +17,39 @@
             </div>
             <br/>
             <div class="row">
-                <div class="col-sm-2">
-                    <b>Correct work:</b>
+                <div class="col-sm-3">
+                    <b>Global correct work:</b>
                 </div>
-                {% if button.bb == None %}
+                {% if button.global_working_percentage == None %}
                     No tests done yet...
                 {% else %}
                     <div class="col-sm-6">
                         <div class="progress">
-                            <div class="progress-bar" role="progressbar" aria-valuenow="{{button.bb}}" aria-valuemin="0" aria-valuemax="100" style="width:{{button.bb}}%">
-                              {{ button.bb }}%
+                            <div class="progress-bar" role="progressbar" aria-valuenow="{{button.global_working_percentage}}" aria-valuemin="0" aria-valuemax="100" style="width:{{button.global_working_percentage}}%">
+                              {{ button.global_working_percentage }}%
                             </div>
                         </div>
                     </div>
                 {% endif %}
             </div><br/>
+
+            <div class="row">
+                <div class="col-sm-3">
+                    <b>Last month correct work:</b>
+                </div>
+                {% if button.last_month_working_percentage == None %}
+                    No tests done yet...
+                {% else %}
+                    <div class="col-sm-6">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuenow="{{button.last_month_working_percentage}}" aria-valuemin="0" aria-valuemax="100" style="width:{{button.last_month_working_percentage}}%">
+                              {{ button.last_month_working_percentage }}%
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div><br/>
+
             <div class="row">
                 <div class="col-sm-2"><b>Locator:</b></div><div class="col-sm-10">{{ button.locator }}</div>
             </div>

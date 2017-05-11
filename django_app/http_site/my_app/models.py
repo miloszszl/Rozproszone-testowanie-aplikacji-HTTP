@@ -77,6 +77,9 @@ class Page(models.Model):
     cookies_present=models.BooleanField(default=None)
     avg_download_time=models.IntegerField(blank=True)  #ms
     force_test = models.BooleanField(default=False)
+    global_working_percentage=models.DecimalField(max_digits=4,decimal_places=2,null=True,blank=True)
+    last_month_working_percentage=models.DecimalField(max_digits=4,decimal_places=2,null=True,blank=True)
+    redirection_percentage=models.DecimalField(max_digits=4,decimal_places=2,null=True,blank=True)
     host = models.ForeignKey('Page_Host',related_name='page_h',null=True,blank=True)
 
     # def __str__(self):
@@ -100,6 +103,8 @@ class Page_Connection(models.Model):
 class Button(models.Model):
     page = models.ForeignKey('Page', related_name='button_p')
     locator=models.CharField(max_length=5000)
+    global_working_percentage = models.DecimalField(max_digits=4, decimal_places=2,null=True,blank=True)
+    last_month_working_percentage = models.DecimalField(max_digits=4, decimal_places=2,null=True,blank=True)
 
     def __str__(self):
         return self.locator

@@ -77,8 +77,6 @@
   </div>
 </div>
 
-<!--todo-->
-<!--force test form-->
     <b>Page statistics:</b><br/><br/>
      <div class="row">
         <div class="col-sm-2">Tests quantity:</div>
@@ -88,12 +86,12 @@
      </div>
     <br/>
     <div class="row">
-        <div class="col-sm-2">Page availability:</div>
+        <div class="col-sm-3">Global page availability:</div>
         <div class="col-sm-6">
-            {% if is_working_percentage is not None %}
+            {% if page.global_working_percentage is not None %}
             <div class="progress">
-                <div class="progress-bar" role="progressbar" aria-valuenow="{{is_working_percentage}}" aria-valuemin="0" aria-valuemax="100" style="width:{{is_working_percentage}}%">
-                    {{is_working_percentage}}%
+                <div class="progress-bar" role="progressbar" aria-valuenow="{{page.global_working_percentage}}" aria-valuemin="0" aria-valuemax="100" style="width:{{page.global_working_percentage}}%">
+                    {{page.global_working_percentage}}%
                 </div>
             </div>
             {% else %}
@@ -101,14 +99,29 @@
             {% endif %}
         </div>
     </div>
-    <div class="row">
-        <div class="col-sm-2">Redirection percentage:</div>
 
+    <div class="row">
+        <div class="col-sm-3">Last month page availability:</div>
         <div class="col-sm-6">
-            {% if redirection_percentage is not None %}
+            {% if page.last_month_working_percentage is not None %}
             <div class="progress">
-                <div class="progress-bar" role="progressbar" aria-valuenow="{{redirection_percentage}}" aria-valuemin="0" aria-valuemax="100" style="width:{{redirection_percentage}}%">
-                  {{redirection_percentage}}%
+                <div class="progress-bar" role="progressbar" aria-valuenow="{{page.last_month_working_percentage}}" aria-valuemin="0" aria-valuemax="100" style="width:{{page.last_month_working_percentage}}%">
+                    {{page.last_month_working_percentage}}%
+                </div>
+            </div>
+            {% else %}
+                Not tested yet ...<br/><br/>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-3">Redirection percentage:</div>
+        <div class="col-sm-6">
+            {% if page.redirection_percentage is not None %}
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" aria-valuenow="{{page.redirection_percentage}}" aria-valuemin="0" aria-valuemax="100" style="width:{{page.redirection_percentage}}%">
+                  {{page.redirection_percentage}}%
                 </div>
             </div>
             {% else %}

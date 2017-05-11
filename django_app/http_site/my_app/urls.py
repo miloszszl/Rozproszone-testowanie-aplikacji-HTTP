@@ -15,6 +15,7 @@ router.register(r'batch', views.BAVS)
 router.register(r'pt', views.PTVS)
 router.register(r't', views.TVS)
 router.register(r'u', views.UVS)
+router.register(r'page_for_client/(?P<addr>[\w\-]+)', views.PageForClientViewSet,base_name='page_for_client')
 
 urlpatterns = [
     url(r'^api/', include(router.urls)),
