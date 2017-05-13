@@ -4,7 +4,7 @@ from django.utils import timezone
 # Create your models here.
 
 class User(models.Model):
-    ipv4=models.CharField(max_length=15)
+    ipv4=models.CharField(max_length=15,blank=True,null=True)
     transfer_speed=models.DecimalField(max_digits=7,decimal_places=2)       #mb/s
     mac_address=models.CharField(max_length=16)
 
@@ -15,23 +15,28 @@ class User(models.Model):
         db_table='Users'
 
 class Test(models.Model):
-    user=models.ForeignKey('User', related_name='test_u',null=True)
+    user=models.ForeignKey('User', related_name='test_u',null=True,blank=True)
     date=models.DateTimeField(default=timezone.now)
 
     class Meta:
         db_table='Tests'
 
 class Batch(models.Model):
-    page = models.ForeignKey('Page', related_name='batch_p')
-    test = models.ForeignKey('Test', related_name='batch_t')
+    page = models.ForeignKey('Page', related_name='batch_p',null=True,blank=True)
+    test = models.ForeignKey('Test', related_name='batch_t',null=True,blank=True)
     levels = models.IntegerField()
 
     class Meta:
         db_table='Batch'
 
+    # def __init__(self, levels, page):
+    #     self.levels=levels
+    #     self.page=page
+
+
 class Page_Test(models.Model):
-    page=models.ForeignKey('Page',related_name='page_test_p')
-    test=models.ForeignKey('Test',related_name='page_test_t')
+    page=models.ForeignKey('Page',related_name='page_test_p',null=True,blank=True)
+    test=models.ForeignKey('Test',related_name='page_test_t',null=True,blank=True)
     # with_pictures=models.BooleanField(default=False)
     is_working=models.BooleanField(default=True)
     redirection=models.ForeignKey('Page',related_name='page_test_r',null=True,blank=True)
@@ -90,8 +95,8 @@ class Page(models.Model):
 
 
 class Page_Connection(models.Model):
-    page_1=models.ForeignKey('Page', related_name='page_connection_1')
-    page_2=models.ForeignKey('Page', related_name='page_connection_2')
+    page_1=models.ForeignKey('Page', related_name='page_connection_1',blank=True)
+    page_2=models.ForeignKey('Page', related_name='page_connection_2',blank=True)
 
     class Meta:
         db_table='Pages_Connections'
@@ -101,7 +106,7 @@ class Page_Connection(models.Model):
 
 
 class Button(models.Model):
-    page = models.ForeignKey('Page', related_name='button_p')
+    page = models.ForeignKey('Page', related_name='button_p',null=True,blank=True)
     locator=models.CharField(max_length=5000)
     global_working_percentage = models.DecimalField(max_digits=4, decimal_places=2,null=True,blank=True)
     last_month_working_percentage = models.DecimalField(max_digits=4, decimal_places=2,null=True,blank=True)
@@ -114,9 +119,9 @@ class Button(models.Model):
 
 
 class T_P_B(models.Model):
-    button = models.ForeignKey('Button', related_name='t_p_b_b')
+    button = models.ForeignKey('Button', related_name='t_p_b_b',null=True,blank=True)
     is_working=models.BooleanField()
-    page_test=models.ForeignKey('Page_Test',related_name='p_t_b_pt')
+    page_test=models.ForeignKey('Page_Test',related_name='p_t_b_pt',null=True,blank=True)
 
     class Meta:
         db_table='T_P_B'

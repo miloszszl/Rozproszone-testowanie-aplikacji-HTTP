@@ -4,7 +4,6 @@ from django.db.models import Q
 from .forms import PageForm
 from django.contrib.auth import authenticate, login,logout
 from django.contrib.auth.decorators import login_required
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db.models import Max,Min
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
@@ -17,6 +16,11 @@ from rest_framework import viewsets
 from .serializers import UserSerializer,TestSerializer,PageSerializer,Page_TestSerializer,\
     Page_ConnectionSerializer,T_P_BSerializer,ButtonSerializer,Page_HostSerializer,BatchSerializer,PageAddressSerializer,\
     Page_For_ClientSerializer
+from rest_framework.response import Response
+from rest_framework import status
+from django.http import Http404
+from rest_framework.views import APIView
+from rest_framework import generics
 
 # Create your views here.
 def main_page(request):
@@ -309,7 +313,7 @@ def pages_search(request):
 
 #####################API
 
-class PageForClientViewSet(viewsets.ReadOnlyModelViewSet):
+class PageForClientView(viewsets.ReadOnlyModelViewSet):
     serializer_class = Page_For_ClientSerializer
 
     def get_queryset(self):
@@ -317,9 +321,69 @@ class PageForClientViewSet(viewsets.ReadOnlyModelViewSet):
         return Page.objects.filter(address=addr)
 
 
-class BVS(viewsets.ModelViewSet):       #ok
-    queryset = Button.objects.all()
-    serializer_class = ButtonSerializer
+class UserView(viewsets.ReadOnlyModelViewSet):
+    serializer_class = UserSerializer
+
+    def get_queryset(self):
+        mac=self.kwargs['mac']
+        return User.objects.filter(mac_address=mac)
+
+
+# class UserViewSet(generics.ListCreateAPIView):
+#     queryset = User.objects.all()
+#     serializer_class = UserSerializer
+
+
+    # def get_object(self, mac):
+    #     try:
+    #         return User.objects.get(mac_address=mac)
+    #     except User.DoesNotExist:
+    #         raise Http404
+    #
+    # def get(self, request, mac, format=None):
+    #     print(mac)
+    #     user = self.get_object(mac)
+    #     serializer = UserSerializer(user)
+    #     return Response(serializer.data)
+
+    # def get_queryset(self):
+    #     mac=self.kwargs['mac']
+    #     return User.objects.filter(mac_address=mac)
+
+
+class UserViewSet(APIView):
+    # http_method_names = ['post',]
+    def post(self, request, format=None):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            x = serializer.create(serializer.data)
+            #serializer.save()
+            return Response(x,status=status.HTTP_201_CREATED)#{"answer":"ok"}   x for test purposes
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request, format=None):
+        snippets = User.objects.all()
+        serializer = UserSerializer(snippets, many=True)
+        return Response(serializer.data)
+
+
+
+######################################################################
+
+class BVS(APIView):       #ok
+    # queryset = Button.objects.all()
+    # serializer_class = ButtonSerializer
+    def get(self, request, format=None):
+        snippets = Button.objects.all()
+        serializer = ButtonSerializer(snippets, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = ButtonSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"answer":"ok"},status=status.HTTP_201_CREATED)
+        return Response({"answer":"not_ok"},status=status.HTTP_400_BAD_REQUEST)
 
 
 class PVS(viewsets.ModelViewSet):       #ok
@@ -347,9 +411,22 @@ class PTVS(viewsets.ModelViewSet):          #ok
     serializer_class = Page_TestSerializer
 
 
-class BAVS(viewsets.ModelViewSet):          #ok
-    queryset = Batch.objects.all()
-    serializer_class = BatchSerializer
+class BAVS(APIView):          #ok
+    def get(self, request, format=None):
+        snippets = Batch.objects.all()
+        serializer = BatchSerializer(snippets, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = BatchSerializer(data=request.data)
+        if serializer.is_valid():
+            x=serializer.create(serializer.data)
+            return Response(x, status=status.HTTP_201_CREATED)
+        return Response({"answer": "not_ok"}, status=status.HTTP_400_BAD_REQUEST)
+        # if serializer.is_valid():
+        #     serializer.save()
+        #     return Response(serializer.data,status=status.HTTP_201_CREATED)
+        # return Response({"answer":"not_ok"},status=status.HTTP_400_BAD_REQUEST)
 
 
 class TVS(viewsets.ModelViewSet):

@@ -4,21 +4,29 @@ from .views import RespCodeChartData,TimeChartData
 from django.views.generic.base import TemplateView
 from django.contrib.auth import views as auth_views
 from rest_framework import routers
+from rest_framework.urlpatterns import format_suffix_patterns
 
 router = routers.DefaultRouter()
-router.register(r'buttons', views.BVS)
+#router.register(r'buttons', views.BVS)
 router.register(r'pages', views.PVS)
 router.register(r'addresses', views.AVS)
 router.register(r'connections', views.CVS)
 router.register(r'hosts', views.PHVS)
-router.register(r'batch', views.BAVS)
+#router.register(r'batch', views.BAVS)
 router.register(r'pt', views.PTVS)
 router.register(r't', views.TVS)
 router.register(r'u', views.UVS)
-router.register(r'page_for_client/(?P<addr>[\w\-]+)', views.PageForClientViewSet,base_name='page_for_client')
+router.register(r'page_for_client/(?P<addr>[\w\-]+)', views.PageForClientView,base_name='page_for_client_view')
+router.register(r'users/(?P<mac>[\w\-]+)', views.UserView,base_name='user_view')    #get only
+
+urlpatterns = format_suffix_patterns(router.get_urls(), allowed=['json', 'html'])
 
 urlpatterns = [
     url(r'^api/', include(router.urls)),
+    url(r'^api/users/$',views.UserViewSet.as_view()),       #for put/post
+    url(r'^api/buttons/$',views.BVS.as_view()),       #for put/post
+    url(r'^api/batch/$',views.BAVS.as_view()),
+
     url(r'^$', views.main_page, name='main_page'),
     url(r'^users/$', views.users_list, name='users_list'),
     url(r'^users/$', views.users_list, name='users_list'),
