@@ -48,14 +48,14 @@ class ButtonSerializer(serializers.ModelSerializer):
     #
     #     return button_working_percentage
 
-    def create(self, validated_data):           #to do
-        t_p_bs_data = validated_data.pop('t_p_b_b')
-        button=Button.objects.get(locator=validated_data['locator'])
-        if button is None:
-            user = Button.objects.create(**validated_data)
-        for t_p_b_data in t_p_bs_data:
-            T_P_B.objects.create(button=button, **t_p_b_data)
-        return button
+    # def create(self, validated_data):           #to do
+    #     t_p_bs_data = validated_data.pop('t_p_b_b')
+    #     button=Button.objects.get(locator=validated_data['locator'])
+    #     if button is None:
+    #         user = Button.objects.create(**validated_data)
+    #     for t_p_b_data in t_p_bs_data:
+    #         T_P_B.objects.create(button=button, **t_p_b_data)
+    #     return button
 
     class Meta:
         model=Button
@@ -71,7 +71,7 @@ class ButtonSerializer(serializers.ModelSerializer):
 class PageSerializer(serializers.ModelSerializer):
     page_connections=Page_ConnectionSerializer(source='page_connection_1',many=True,required=False,allow_null=True)
     buttons=ButtonSerializer(source='button_p',many=True,required=False,allow_null=True)
-    host=Page_HostSerializer(source='page_h',required=False,allow_null=True)
+    host=Page_HostSerializer(required=False,allow_null=True)
 
     class Meta:
         model=Page
@@ -109,15 +109,15 @@ class BatchSerializer(serializers.ModelSerializer):
         model=Batch
         fields=('levels','page_address',)
 
-    def create(self, validated_data):
-        pa=validated_data['page_address']
-        addr=pa['address']
-        page=Page.objects.filter(address=addr)
-        if len(page)>0:
-            batch=Batch.objects.create(levels=validated_data['levels'],page=page[0])
-        else:
-            batch = Batch.objects.create(levels=validated_data['levels'])
-        return batch
+    # def create(self, validated_data):
+    #     pa=validated_data['page_address']
+    #     addr=pa['address']
+    #     page=Page.objects.filter(address=addr)
+    #     if len(page)>0:
+    #         batch=Batch.objects.create(levels=validated_data['levels'],page=page[0])
+    #     else:
+    #         batch = Batch.objects.create(levels=validated_data['levels'])
+    #     return batch
 
 
 class TestSerializer(serializers.ModelSerializer):
@@ -128,18 +128,18 @@ class TestSerializer(serializers.ModelSerializer):
         model=Test
         fields=('date','batch','pages_tests')
 
-    def create(self, validated_data):
-        data_for_batches = validated_data.pop('batch')#copy.deepcopy(validated_data)
-        pages_test_data=validated_data.pop('page_test')
-
-        test = Test.objects.create(**validated_data)
-
-        for pt_data in pages_test_data:
-            Page_Test.objects.create(test=test, **pt_data)
-        for b_data in data_for_batches:
-            Batch.objects.create(test=test, **b_data)
-
-        return test
+    # def create(self, validated_data):
+    #     data_for_batches = validated_data.pop('batch')#copy.deepcopy(validated_data)
+    #     pages_test_data=validated_data.pop('page_test')
+    #
+    #     test = Test.objects.create(**validated_data)
+    #
+    #     for pt_data in pages_test_data:
+    #         Page_Test.objects.create(test=test, **pt_data)
+    #     for b_data in data_for_batches:
+    #         Batch.objects.create(test=test, **b_data)
+    #
+    #     return test
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -150,7 +150,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields=('ipv4', 'transfer_speed', 'mac_address', 'tests')
 
     def create(self, validated_data):
-        tests = validated_data.pop('tests')
+        tests_list = validated_data.pop('tests', None)
         user = User.objects.filter(mac_address=validated_data['mac_address'], ipv4=validated_data['ipv4'],
                                 transfer_speed=validated_data['transfer_speed'])
         #user
@@ -159,37 +159,121 @@ class UserSerializer(serializers.ModelSerializer):
         else:
             user=user[0]
         #tests
-        for test in tests:
-            t_cpy=copy.deepcopy(test)
-            data_for_batches = test.pop('batch')  # copy.deepcopy(validated_data)
-            pages_test_data = test.pop('pages_tests')
+        if tests_list is not None:
+            for test in tests_list:
+                if test is not None:
+                    batches_list = test.pop('batch', None)
+                    pages_tests_list = test.pop('pages_tests', None)
+                    t_obj = Test.objects.create(user=user, **test)
 
-            t_obj = Test.objects.create(user=user,**test)
+                    if pages_tests_list is not None:
+                        for pt_data in pages_tests_list:
+                            if pt_data is not None:
+                                page_data=pt_data.pop('page', None)
+                                redirection_data=pt_data.pop('redirection', None)
 
-            for pt_data in pages_test_data:
-                p_data=pt_data.pop('page')
-                r_data=pt_data.pop('redirection')
-                pt_obj=Page_Test.objects.create(test=t_obj, **pt_data)
-                if p_data is not None:
-                    host_data=p_data.pop('host')
-                    page_connections=p_data.pop('page_connections')
-                    buttons=p_data.pop('buttons')
+                                r_obj=None
+                                p_obj=None
+                                pt_obj=None
+                                if page_data is not None:
+                                    host_data=page_data.pop('host', None)
+                                    ph_obj=Page_Host.objects.filter(domain_name=host_data['domain_name'], ipv4=host_data['ipv4'])
+                                    if len(ph_obj)<=0:
+                                        ph_obj=Page_Host.objects.create(**host_data)
+                                    else:
+                                        ph_obj=ph_obj[0]
 
-                    Page.objects.create(**p_data)   #page_test=pt_obj,
+                                    page_connections_list=page_data.pop('page_connections', None)
+                                    buttons_list=page_data.pop('buttons', None)
+                                    p_obj=Page.objects.filter(address=page_data['address'])
+                                    if len(p_obj)<=0:
+                                        p_obj=Page.objects.create(host=ph_obj,**page_data)
+                                    else:
+                                        p_obj=p_obj[0]
 
-                if r_data is not None:
-                    pass
+                                    pt_obj=Page_Test.objects.create(test=t_obj, page=p_obj, redirection=None, **pt_data)
+
+                                    if page_connections_list is not None:
+                                        for pc in page_connections_list:
+                                            if pc is not None:
+                                                page_2=pc['page_2']
+                                                page_for_pc=Page.objects.filter(address=page_2['address'])
+                                                if page_for_pc is not None and len(page_for_pc)>0:
+                                                    page_2_for_pc=page_for_pc[0]
+                                                    Page_Connection.objects.create(page_1=p_obj,page_2=page_2_for_pc)
+                                                else:
+                                                    page_2_for_pc = Page.objects.create(address=page_2['address'])
+                                                    Page_Connection.objects.create(page_1=p_obj, page_2=page_2_for_pc)
+
+                                    #buttons
+                                    if buttons_list is not None:
+                                        for button in buttons_list:
+                                            if button is not None:
+                                                t_p_b_list=button.pop('t_p_b', None)
+                                                b=Button.objects.filter(locator=button['locator'],page=p_obj)
+                                                if b is None or len(b) <= 0:
+                                                    b = Button.objects.create(page=p_obj, **button)
+                                                else:
+                                                    b=b[0]
+
+                                                for t_p_b in t_p_b_list:
+                                                    if t_p_b is not None:
+                                                        T_P_B.objects.create(button=b, page_test=pt_obj, is_working=t_p_b['is_working'])
+#looks good up to that moment
+                                if redirection_data is not None:
+                                    host_data = page_data.pop('host', None)
+                                    ph_obj = Page_Host.objects.filter(domain_name=host_data['domain_name'],
+                                                                      ipv4=host_data['ipv4'])
+                                    if len(ph_obj) <= 0:
+                                        ph_obj = Page_Host.objects.create(**host_data)
+                                    else:
+                                        ph_obj = ph_obj[0]
+
+                                    page_connections_list = page_data.pop('page_connections', None)
+                                    buttons_list = page_data.pop('buttons', None)
+                                    p_obj = Page.objects.create(host=ph_obj, **page_data)
+                                    pt_obj = Page_Test.objects.create(test=t_obj, page=p_obj, redirection=None,
+                                                                      **pt_data)
+
+                                    if page_connections_list is not None:
+                                        for pc in page_connections_list:
+                                            if pc is not None:
+                                                page_2 = pc['page_2']
+                                                page_for_pc = Page.objects.filter(address=page_2['address'])
+                                                if page_for_pc is not None and len(page_for_pc) > 0:
+                                                    page_2_for_pc = page_for_pc[0]
+                                                    Page_Connection.objects.create(page_1=p_obj, page_2=page_2_for_pc)
+                                                else:
+                                                    page_2_for_pc = Page.objects.create(address=page_2['address'])
+                                                    Page_Connection.objects.create(page_1=p_obj, page_2=page_2_for_pc)
+
+                                    # buttons
+                                    if buttons_list is not None:
+                                        for button in buttons_list:
+                                            if button is not None:
+                                                t_p_b_list = button.pop('t_p_b', None)
+                                                b = Button.objects.filter(locator=button['locator'], page=p_obj)
+                                                if b is None or len(b) <= 0:
+                                                    b = Button.objects.create(page=p_obj, **button)
+                                                else:
+                                                    b = b[0]
+
+                                                for t_p_b in t_p_b_list:
+                                                    if t_p_b is not None:
+                                                        T_P_B.objects.create(button=b, page_test=pt_obj,
+                                                                             is_working=t_p_b['is_working'])
 
 
-            for b_data in data_for_batches:
-                p_a = b_data['page_address']
-                addr = p_a['address']
-                page = Page.objects.filter(address=addr)
-                if len(page) > 0:
-                    Batch.objects.create(test=t_obj, levels=b_data['levels'], page=page[0])
-                else:
-                    Batch.objects.create(test=t_obj, levels=b_data['levels'])
-                #Batch.objects.create(test=t_obj, **b_data)
+
+                    for b_data in batches_list:
+                        p_a = b_data['page_address']
+                        addr = p_a['address']
+                        page = Page.objects.filter(address=addr)
+                        if len(page) > 0:
+                            Batch.objects.create(test=t_obj, levels=b_data['levels'], page=page[0])
+                        else:
+                            Batch.objects.create(test=t_obj, levels=b_data['levels'])
+
 
         return user
 
