@@ -154,7 +154,7 @@
 
     <ul class="list-group">
         <li class="list-group-item">
-            <div class="row"><div class="col-sm-6"><b>Locator:</b></div><div class="col-sm-6"><b>Correct work:</b></div></div>
+            <div class="row"><div class="col-sm-6"><b>Locator:</b></div><div class="col-sm-6"></div></div>
         </li>
         {%for button in buttons%}
             <li class="list-group-item">
@@ -163,17 +163,7 @@
                         <div class="col-sm-6">
                             {{ button.locator|truncatechars:80}}
                         </div>
-                        {% if button.bb == None %}
-                            No tests done yet...
-                        {% else %}
-                            <div class="col-sm-6">
-                                <div class="progress">
-                                    <div class="progress-bar" role="progressbar" aria-valuenow="{{button.bb}}" aria-valuemin="0" aria-valuemax="100" style="width:{{button.bb}}%">
-                                      {{ button.bb }}%
-                                    </div>
-                                </div>
-                            </div>
-                        {% endif %}
+
                     </div>
                 </a>
             </li>

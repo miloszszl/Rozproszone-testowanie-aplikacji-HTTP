@@ -2,6 +2,8 @@ from rest_framework import serializers
 from .models import User,Test,Page,Page_Test,Page_Connection,T_P_B,Button,Page_Host,Batch
 from django.db.models import Max,Min
 import copy
+from datetime import datetime, timedelta
+from django.db.models import Q
 
 class Page_HostSerializer(serializers.ModelSerializer):
 
@@ -190,8 +192,39 @@ class UserSerializer(serializers.ModelSerializer):
                                         p_obj=Page.objects.create(host=ph_obj,**page_data)
                                     else:
                                         p_obj=p_obj[0]
+                                        p_obj.weight=page_data['weight']
+                                        p_obj.encoding=page_data['encoding']
+                                        p_obj.weight_w_pictures=page_data['weight_w_pictures']
+                                        p_obj.cookies_present=page_data['cookies_present']
+                                        p_obj.force_test=page_data['force_test']
+                                        p_obj.save()
 
-                                    pt_obj=Page_Test.objects.create(test=t_obj, page=p_obj, redirection=None, **pt_data)
+                                    pt_obj = Page_Test.objects.create(test=t_obj, page=p_obj, redirection=None,**pt_data)
+
+                                    #global_working_percentage
+                                    total_pt1=Page_Test.objects.filter(page=p_obj).count()
+                                    global_working_percentage_pt=None
+                                    if total_pt1 > 0:
+                                        working_pt1=Page_Test.objects.filter(page=p_obj,is_working=True).count()
+                                        global_working_percentage_pt=working_pt1/total_pt1*100.0
+
+                                    #local working percentage
+                                    d = datetime.today() - timedelta(days=30)
+                                    tests_local=Test.objects.filter(date__gte=d)
+                                    total_pt2 = Page_Test.objects.filter(page=p_obj,test__in=tests_local).count()
+                                    last_month_working_percentage_pt=None
+                                    if total_pt2>0:
+                                        working_pt2 = Page_Test.objects.filter(page=p_obj,test__in=tests_local,is_working=True).count()
+                                        last_month_working_percentage_pt=working_pt2/total_pt2*100.0
+
+                                    #redirection percentage
+                                    not_null_redir = Page_Test.objects.filter(~Q(redirection=None),page=p_obj).count()
+                                    redir_percentage=total_pt1/not_null_redir
+
+                                    p_obj.last_month_working_percentage=last_month_working_percentage_pt
+                                    p_obj.global_working_percentage=global_working_percentage_pt
+                                    p_obj.redirection_percentage=redir_percentage
+                                    p_obj.save()
 
                                     if page_connections_list is not None:
                                         for pc in page_connections_list:
@@ -219,7 +252,30 @@ class UserSerializer(serializers.ModelSerializer):
                                                 for t_p_b in t_p_b_list:
                                                     if t_p_b is not None:
                                                         T_P_B.objects.create(button=b, page_test=pt_obj, is_working=t_p_b['is_working'])
-#looks good up to that moment
+
+                                                # global_working_percentage
+                                                total_tpb1 = T_P_B.objects.filter(button=b).count()
+                                                global_working_percentage_tpb = None
+                                                if total_tpb1 > 0:
+                                                    working_tpb1 = T_P_B.objects.filter(button=b,
+                                                                                           is_working=True).count()
+                                                    global_working_percentage_tpb = working_tpb1 / total_tpb1 * 100.0
+
+                                                # local working percentage
+                                                d2 = datetime.today() - timedelta(days=30)
+                                                tl = Test.objects.filter(date__gte=d)
+                                                pt = Page_Test.objects.filter(page=p_obj,test__in=tl)
+                                                total_tpb2=T_P_B.objects.filter(button=b,page_test__in=pt).count()
+                                                last_month_working_percentage_tpb = None
+                                                if total_tpb2 > 0:
+                                                    working_tpb2 = T_P_B.objects.filter(button=b, page_test__in=pt,
+                                                                                        is_working=True).count()
+                                                    last_month_working_percentage_tpb = working_tpb2 / total_tpb2 * 100.0
+
+                                                    b.last_month_working_percentage = last_month_working_percentage_tpb
+                                                    b.global_working_percentage = global_working_percentage_tpb
+                                                    b.save()
+
                                 if redirection_data is not None:
                                     host_data = page_data.pop('host', None)
                                     ph_obj = Page_Host.objects.filter(domain_name=host_data['domain_name'],
@@ -231,9 +287,22 @@ class UserSerializer(serializers.ModelSerializer):
 
                                     page_connections_list = page_data.pop('page_connections', None)
                                     buttons_list = page_data.pop('buttons', None)
-                                    p_obj = Page.objects.create(host=ph_obj, **page_data)
-                                    pt_obj = Page_Test.objects.create(test=t_obj, page=p_obj, redirection=None,
-                                                                      **pt_data)
+
+                                    p_obj = Page.objects.filter(address=page_data['address'])
+                                    if len(p_obj) <= 0:
+                                        p_obj = Page.objects.create(host=ph_obj, **page_data)
+                                    else:
+                                        p_obj = p_obj[0]
+                                        p_obj.weight = page_data['weight']
+                                        p_obj.encoding = page_data['encoding']
+                                        p_obj.weight_w_pictures = page_data['weight_w_pictures']
+                                        p_obj.cookies_present = page_data['cookies_present']
+                                        p_obj.force_test = page_data['force_test']
+                                        p_obj.save()
+
+                                    if pt_obj is not None:
+                                        pt_obj.redirection=p_obj
+                                        pt_obj.save()
 
                                     if page_connections_list is not None:
                                         for pc in page_connections_list:

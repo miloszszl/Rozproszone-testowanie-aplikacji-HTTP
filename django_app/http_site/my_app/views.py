@@ -356,9 +356,9 @@ class UserViewSet(APIView):
     def post(self, request, format=None):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            x = serializer.create(serializer.data)
-            #serializer.save()
-            return Response(x,status=status.HTTP_201_CREATED)#{"answer":"ok"}   x for test purposes
+            x = serializer.create(request.data)
+            serializer.save()
+            return Response({"answer":"ok"},status=status.HTTP_201_CREATED)#{"answer":"ok"}   x for test purposes
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, format=None):
