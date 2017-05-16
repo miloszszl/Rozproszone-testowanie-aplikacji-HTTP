@@ -51,7 +51,16 @@ def user_detail(request,pk):
 
 @login_required
 def tests_list(request):
-    tests=Test.objects.all().order_by('id')
+    tests=Test.objects.all().order_by('-id')
+    page_number = request.GET.get('page_number', 1)
+    paginator = Paginator(tests, 15)
+    try:
+        tests = paginator.page(page_number)
+    except PageNotAnInteger:
+        tests = paginator.page(1)
+    except EmptyPage:
+        tests = paginator.page(paginator.num_pages)
+
     return render(request,'my_app/tests_list.html',{'tests':tests})
 
 @login_required
@@ -135,15 +144,18 @@ def page_detail(request,pk):
 @login_required
 def page_edit(request, pk):
     page = get_object_or_404(Page, pk=pk)
+    error=None
     if request.method == "POST":
         form = PageForm(request.POST, instance=page)
         if form.is_valid():
             page = form.save(commit=False)
             page.save()
             return redirect('page_detail', pk=page.pk)
+        else:
+            error = 'Invalid values'
     else:
         form = PageForm(instance=page)
-    return render(request, 'my_app/page_edit.html', {'form': form,'page':page})
+    return render(request, 'my_app/page_edit.html', {'form': form,'page':page,'error': error})
 
 @login_required
 def page_new(request):
@@ -160,7 +172,7 @@ def page_new(request):
                 error='This address already exists'
                 return render(request, 'my_app/page_new.html', {'form': form,'error':error})
         else:
-            error = '1111'
+            error = 'Invalid values'
             return render(request, 'my_app/page_new.html', {'form': form,'error':error})
     else:
         form = PageForm()
@@ -257,7 +269,9 @@ class TimeChartData(APIView):
             occurrences.append(Page_Test.objects.filter(page=pk, download_time=pt_max['download_time__max']).count())
         else:
             return Response(None)
-        return Response({'intervals':intervals,'occurrences':occurrences})
+
+        new_intervals=[float("{0:.2f}".format(x)) for x in intervals]
+        return Response({'intervals':new_intervals,'occurrences':occurrences})
 
 
 def normalize_query(query_string,

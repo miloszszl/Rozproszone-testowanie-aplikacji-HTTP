@@ -14,6 +14,9 @@
         <form class="form-horizontal" method="POST" >
             {% csrf_token %}
             <div class="well">
+                {% if error %}
+                    <div class="alert alert-danger">{{error}}</div>
+                {% endif %}
                 {% for field in form %}
                     <div class="form-group">
                         {% if field.errors %}

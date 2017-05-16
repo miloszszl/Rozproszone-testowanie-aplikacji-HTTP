@@ -80,7 +80,7 @@ class Page(models.Model):
     weight_w_pictures=models.IntegerField(null=True,blank=True) #kB
     encoding=models.CharField(max_length=50,blank=True)
     cookies_present=models.BooleanField(default=None)
-    avg_download_time=models.IntegerField(blank=True)  #ms
+    avg_download_time=models.DecimalField(max_digits=12,decimal_places=2,null=True,blank=True)  #ms
     force_test = models.BooleanField(default=False)
     global_working_percentage=models.DecimalField(max_digits=5,decimal_places=2,null=True,blank=True)
     last_month_working_percentage=models.DecimalField(max_digits=5,decimal_places=2,null=True,blank=True)
