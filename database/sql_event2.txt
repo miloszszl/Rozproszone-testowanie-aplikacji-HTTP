@@ -1,0 +1,44 @@
+drop event if exists lm_w_percentage_b;
+DELIMITER |
+CREATE EVENT `lm_w_percentage_b`
+ON SCHEDULE EVERY 50 second
+ON COMPLETION PRESERVE
+ENABLE
+DO
+Begin
+	DECLARE finished INTEGER DEFAULT 0;
+    declare total_b integer;
+	declare working_b integer;
+    
+	declare tmp decimal(5,2);
+	declare ids integer;
+	declare cur1 cursor for select b.id from buttons b;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = 1;
+	open cur1;
+	read_loop: LOOP
+	fetch cur1 into ids;
+	 IF finished=1 THEN
+		  LEAVE read_loop;
+	 END IF;
+     
+     
+	select count(b.id) into total_b from buttons b 
+    join t_p_b on t_p_b.button_id=b.id
+    join pages_tests pt on pt.id=t_p_b.page_test_id
+    join tests t on t.id=pt.test_id
+    where t.date>=(CURDATE() - INTERVAL 30 DAY ) and b.id=ids;
+    
+	select count(t_p_b.is_working) into working_b from buttons b 
+    join t_p_b on t_p_b.button_id=b.id
+    join pages_tests pt on pt.id=t_p_b.page_test_id
+    join tests t on t.id=pt.test_id
+    where (t_p_b.is_working=1 or t_p_b.is_working=True) and (t.date>=CURDATE() - INTERVAL 30 DAY) and b.id=ids;
+    
+	if total_b>0 then
+		set tmp=working_b/total_b*100.0;
+        update buttons set last_month_working_percentage=tmp where id=ids;
+	END IF;
+	END LOOP;
+    close cur1;
+end |
+DELIMITER ; 
