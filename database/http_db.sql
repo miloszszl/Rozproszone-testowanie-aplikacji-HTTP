@@ -563,6 +563,121 @@ LOCK TABLES `users` WRITE;
 INSERT INTO `users` VALUES (1,'12e',12.00,'edasdsad'),(2,'12ed',21.00,'dfsvf');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping events for database 'http_db'
+--
+/*!50106 SET @save_time_zone= @@TIME_ZONE */ ;
+/*!50106 DROP EVENT IF EXISTS `lm_w_percentage` */;
+DELIMITER ;;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;;
+/*!50003 SET character_set_client  = utf8 */ ;;
+/*!50003 SET character_set_results = utf8 */ ;;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;;
+/*!50003 SET sql_mode              = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;;
+/*!50003 SET @saved_time_zone      = @@time_zone */ ;;
+/*!50003 SET time_zone             = 'SYSTEM' */ ;;
+/*!50106 CREATE*/ /*!50117 DEFINER=`root`@`localhost`*/ /*!50106 EVENT `lm_w_percentage` ON SCHEDULE EVERY 1 DAY STARTS '2017-05-17 07:32:15' ON COMPLETION PRESERVE ENABLE DO Begin
+	DECLARE finished INTEGER DEFAULT 0;
+    declare total_pt integer;
+	declare working integer;
+    
+	declare tmp decimal(5,2);
+	declare ids integer;
+	declare cur1 cursor for select p.id from pages p;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = 1;
+	
+    open cur1;
+	read_loop: LOOP
+	fetch cur1 into ids;
+	 IF finished=1 THEN
+		  LEAVE read_loop;
+	 END IF;
+     
+	select count(pt.id) into total_pt from pages_tests pt 
+	join pages p on p.id=pt.page_id
+    join tests t on t.id=pt.test_id
+    where t.date>=(CURDATE() - INTERVAL 30 DAY) and p.id=ids;
+    
+	select count(pt.is_working) into working from pages_tests pt 
+	join pages p on p.id=pt.page_id 
+    join tests t on t.id=pt.test_id
+    where (pt.is_working=1 or pt.is_working=1) and (t.date>=CURDATE() - INTERVAL 30 DAY) and p.id=ids;
+    
+	if total_pt>0 then
+		set tmp=working/total_pt*100.0;
+        update pages set last_month_working_percentage=tmp where id=ids;
+	END IF;
+	END LOOP;
+    close cur1;
+end */ ;;
+/*!50003 SET time_zone             = @saved_time_zone */ ;;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;;
+/*!50003 SET character_set_results = @saved_cs_results */ ;;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;;
+/*!50106 DROP EVENT IF EXISTS `lm_w_percentage_b` */;;
+DELIMITER ;;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;;
+/*!50003 SET character_set_client  = utf8 */ ;;
+/*!50003 SET character_set_results = utf8 */ ;;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;;
+/*!50003 SET sql_mode              = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;;
+/*!50003 SET @saved_time_zone      = @@time_zone */ ;;
+/*!50003 SET time_zone             = 'SYSTEM' */ ;;
+/*!50106 CREATE*/ /*!50117 DEFINER=`root`@`localhost`*/ /*!50106 EVENT `lm_w_percentage_b` ON SCHEDULE EVERY 1 DAY STARTS '2017-05-17 07:32:31' ON COMPLETION PRESERVE ENABLE DO Begin
+	DECLARE finished INTEGER DEFAULT 0;
+    declare total_b integer;
+	declare working_b integer;
+    
+	declare tmp decimal(5,2);
+	declare ids integer;
+	declare cur1 cursor for select b.id from buttons b;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = 1;
+	open cur1;
+	read_loop: LOOP
+	fetch cur1 into ids;
+	 IF finished=1 THEN
+		  LEAVE read_loop;
+	 END IF;
+     
+     
+	select count(b.id) into total_b from buttons b 
+    join t_p_b on t_p_b.button_id=b.id
+    join pages_tests pt on pt.id=t_p_b.page_test_id
+    join tests t on t.id=pt.test_id
+    where t.date>=(CURDATE() - INTERVAL 30 DAY ) and b.id=ids;
+    
+	select count(t_p_b.is_working) into working_b from buttons b 
+    join t_p_b on t_p_b.button_id=b.id
+    join pages_tests pt on pt.id=t_p_b.page_test_id
+    join tests t on t.id=pt.test_id
+    where (t_p_b.is_working=1 or t_p_b.is_working=True) and (t.date>=CURDATE() - INTERVAL 30 DAY) and b.id=ids;
+    
+	if total_b>0 then
+		set tmp=working_b/total_b*100.0;
+        update buttons set last_month_working_percentage=tmp where id=ids;
+	END IF;
+	END LOOP;
+    close cur1;
+end */ ;;
+/*!50003 SET time_zone             = @saved_time_zone */ ;;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;;
+/*!50003 SET character_set_results = @saved_cs_results */ ;;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;;
+DELIMITER ;
+/*!50106 SET TIME_ZONE= @save_time_zone */ ;
+
+--
+-- Dumping routines for database 'http_db'
+--
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -573,4 +688,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-05-17  7:33:12
+-- Dump completed on 2017-05-17  7:39:44
