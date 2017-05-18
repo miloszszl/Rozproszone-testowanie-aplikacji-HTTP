@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace client
@@ -16,49 +9,41 @@ namespace client
         int left = 25;
         int distance_y = 5;
         int distance_x = 20;
-        int limit = 10;
-        int counter = 0;
 
         bool test_clicked = false;
+        private static TextBox textbox1;
+        private static TextBox textbox;
 
-        Dictionary<TextBox, TextBox> t_dict = new Dictionary<TextBox, TextBox>();
 
-        private List<String> GetAddresses()
+        public static  string GetAddress()
         {
-            List<String> a = new List<String>();
-            foreach (var x in t_dict)
-            {
-                a.Add(x.Key.Text);
-            }
-            return a;
+            return textbox1.Text;
+
         }
 
-        private Dictionary<TextBox, TextBox> GetAddressesAndLevels()
+        private string[] GetAddressesAndLevels()
         {
-            Dictionary<TextBox, TextBox> a = new Dictionary<TextBox, TextBox>();
-            foreach (var x in t_dict)
-            {
-                a[x.Key] = x.Value;
-            }
-            return a;
+            string[] tab = new string[2];
+            tab[0] = textbox.Text;
+            tab[1] = textbox1.Text;
+            return tab;
         }
 
         public Form1()
         {
             InitializeComponent();
-            TextBox textbox = new TextBox();
+            textbox = new TextBox();
             textbox.Left = left;
             textbox.Top = top;
             textbox.Width = 290;
             
             this.groupBox1.Controls.Add(textbox);
 
-            TextBox textbox1 = new TextBox();
+            textbox1 = new TextBox();
             textbox1.Left = left+290+distance_x;
             textbox1.Top = top;
             textbox1.Width = 40;
             this.groupBox1.Controls.Add(textbox1);
-            t_dict[textbox] = textbox1;
             top += textbox.Height + distance_y;
 
         }
@@ -82,19 +67,24 @@ namespace client
                 button1.Text = "STOP";
                 test_clicked = true;
 
-                foreach (var x in t_dict)
+                int level = 0;
+                var tab = GetAddressesAndLevels();
+                try
                 {
-                    x.Key.Enabled = false;
-                    x.Value.Enabled = false;
+                    level = Convert.ToInt32(tab[1]);
                 }
-                button2.Enabled = false;
-
-                List<String> a= GetAddresses();
-
-                TestController tc = new TestController(a);
-                tc.Test();
-
+                catch (Exception exception)
+                {
+                    //TODO: Obsługa błędu, źle wpisane dane (np. litery)
+                }
                 
+                //sprawdzenie poprawności adresu
+                if (!CheckAdress.CheckAdressMethod(tab[0]))
+                {
+                    tab[0]= CheckAdress.CorrectAdress(tab[0]);
+                }
+                TestController tc = new TestController(tab[0],level);
+                tc.Test();
 
             }
             else
@@ -103,12 +93,6 @@ namespace client
                 button1.Text = "TEST";
                 test_clicked = false;
 
-                foreach (var x in t_dict)
-                {
-                    x.Key.Enabled = true;
-                    x.Value.Enabled = true;
-                }
-                button2.Enabled = true;
             }
             
         }
@@ -118,28 +102,6 @@ namespace client
 
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-                if(counter< limit)
-                {
-                    counter++;
-                    TextBox textbox = new TextBox();
-                    textbox.Left = left;
-                    textbox.Top = top;
-                    textbox.Width = 290;
-                    this.groupBox1.Controls.Add(textbox);
-
-                    TextBox textbox1 = new TextBox();
-                    textbox1.Left = left + 290 + distance_x;
-                    textbox1.Top = top;
-                    textbox1.Width = 40;
-                    this.groupBox1.Controls.Add(textbox1);
-                    t_dict[textbox] = textbox1;
-                    top += textbox.Height + distance_y;
-                }
-
-
-        }
         
 
         private void Form1_Resize(object sender, EventArgs e)

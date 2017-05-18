@@ -5,6 +5,7 @@ namespace client
 {
     static class Program
     {
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -13,7 +14,7 @@ namespace client
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Form f1 = new Form1();
+            Form1 f1 = new Form1();
             Application.Run(f1);
 
         }
