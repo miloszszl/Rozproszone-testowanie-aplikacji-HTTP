@@ -241,7 +241,9 @@ class UserSerializer(serializers.ModelSerializer):
 
                                     #redirection percentage
                                     not_null_redir = Page_Test.objects.filter(~Q(redirection=None),page=p_obj).count()
-                                    redir_percentage=total_pt1/not_null_redir
+                                    redir_percentage = None
+                                    if not_null_redir>0:
+                                        redir_percentage=total_pt1/not_null_redir
 
                                     #avg_download time
                                     time_sum=Page_Test.objects.filter(page=p_obj,download_time__gte=0).aggregate(time=Sum('download_time'))
@@ -368,7 +370,9 @@ class UserSerializer(serializers.ModelSerializer):
                                     # redirection percentage
                                     not_null_redir = Page_Test.objects.filter(~Q(redirection=None),
                                                                               page=p_obj).count()
-                                    redir_percentage = total_pt1 / not_null_redir
+                                    redir_percentage=None
+                                    if not_null_redir>0:
+                                        redir_percentage = total_pt1 / not_null_redir
 
                                     # avg_download time
                                     time_sum = Page_Test.objects.filter(page=p_obj, download_time__gte=0).aggregate(
