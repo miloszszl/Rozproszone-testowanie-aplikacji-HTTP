@@ -52,8 +52,8 @@ namespace client
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
 
             //Metody zwracają słowniki z wynikami. Można je przetwarzać w dowolny sposób. 
-            Check(buttons);
-            Check(input);
+            // Check(buttons);
+            // Check(input);
 
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
             //sprawdzanie zagnieżdzeń
@@ -62,7 +62,7 @@ namespace client
             //Zamykam driver i przeglądarkę po testach
             driver.Close();
             driver.Quit();
-
+           
         }
 
 
@@ -277,6 +277,7 @@ namespace client
         private List<string> DeleteVisitedLink(List<string> lista)
         {
             bool flag = false;
+            string x = null;
             foreach (string el in lista)
             {
                 foreach (var v in Visited)
@@ -284,7 +285,7 @@ namespace client
                     if (v == el)
                     {
                         flag = true;
-                        lista.Remove(el);
+                        x = el;
                         break;
                     }
                 }
@@ -292,7 +293,10 @@ namespace client
                 break;
             }
             if (flag)
+            {
+                lista.Remove(x);
                 DeleteVisitedLink(lista);
+            }
             return lista;
         }
     }

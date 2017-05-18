@@ -2,7 +2,10 @@
 {
     public class Result
     {
-        public string IPv4 { get; set; }
+        public string ipv4 { get; set; }
+        public string transfer_speed { get; set; }
+        public string mac_address { get; set; }
+
         public tests tests;
 
         public Result()
