@@ -19,18 +19,33 @@ namespace client
             htmlCode = client.DownloadString(address);
             watch.Stop();
 
+            //Stworzenie obiektów i wypełnienie danymi - to się wrzuci do osobnej metody
             int elapsedMs = Convert.ToInt32(watch.ElapsedMilliseconds);
             var res = new Result();
-            res.tests.pages_tests.download_time = elapsedMs;
+            var y = new tests();
+            res.tests.Add(y);
+            var z = new pages_tests();
+            res.tests[0].pages_tests.Add(z);
+            res.tests[0].pages_tests[0].download_time = elapsedMs;
             res.ipv4 = "bleeee";
-            res.tests.batch.levels = 1;
-            res.tests.batch.page_address.address = "tomekk";
+            var xyz = new page_connections();
+            xyz.page_2.address = "ala_ma_kota";
+            res.tests[0].pages_tests[0].page.page_connections.Add(xyz);
+            var x = new batch();
+            res.tests[0].batch.Add(x);
+
+            res.tests[0].batch[0].levels = 1;
+            res.tests[0].batch[0].page_address.address = "tomekk";
+            //END
+
+            //Serializacja do JSONA
             var data = JsonConvert.SerializeObject(res);
 
             var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://127.0.0.1:8000/testing/api/users");
             httpWebRequest.ContentType = "application/json";
             httpWebRequest.Method = "POST";
           
+            //Wysyłanie JSONA do zdalnego serwera
             using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
             {
                 streamWriter.Write(data);
@@ -38,6 +53,7 @@ namespace client
                 streamWriter.Close();
             }
 
+            //Oczekiwanie na odpowiedź serwera
             var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
             using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
             {

@@ -1,15 +1,18 @@
-﻿namespace client
+﻿using System;
+using System.Collections.Generic;
+
+namespace client
 {
     public class tests
     {
-        public string date { get; set; }
-        public batch batch;
-        public pages_tests pages_tests;
+        public DateTime date { get; set; }
+        public List<batch> batch;
+        public List<pages_tests> pages_tests;
 
         public tests()
         {
-            this.pages_tests = new pages_tests();
-            this.batch = new batch();
+            this.pages_tests = new List<pages_tests>();
+            this.batch = new List<batch>();
         }
     }
 }

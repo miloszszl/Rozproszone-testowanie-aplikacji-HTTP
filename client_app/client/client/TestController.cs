@@ -16,8 +16,8 @@
             WebPageDownloader wbd = new WebPageDownloader();
             wbd.TestDownload("https://www.google.pl/");
 
-            SeleniumTest Selenium = new SeleniumTest();
-            Selenium.Test(Address, Levels);
+           // SeleniumTest Selenium = new SeleniumTest();
+           // Selenium.Test(Address, Levels);
         }
 
     }

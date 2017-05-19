@@ -1,4 +1,6 @@
-﻿namespace client
+﻿using System.Collections.Generic;
+
+namespace client
 {
     public class pages_tests
     {

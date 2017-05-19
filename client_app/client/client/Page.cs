@@ -12,15 +12,15 @@ namespace client
         public double global_working_percentage { get; set; }
         public double last_month_working_percentage { get; set; }
         public bool force_test { get; set; }
-        public bool weight_w_pictures { get; set; }
+        public int weight_w_pictures { get; set; }
         public host host;
-        public page_connections page_connections;
+        public List<page_connections> page_connections;
         public List<buttons> buttons;
 
         public page()
         {
             this.host = new host();
-            this.page_connections = new page_connections();
+            this.page_connections = new List<page_connections>();
         }
     }
 
@@ -32,7 +32,12 @@ namespace client
 
     public class page_connections
     {
-        public List<page_2> page_2;
+        public page_2 page_2;
+
+        public page_connections()
+        {
+            this.page_2 = new page_2();
+        }
     }
 
     public class page_2
