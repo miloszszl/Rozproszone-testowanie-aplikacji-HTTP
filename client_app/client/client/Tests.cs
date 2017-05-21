@@ -5,7 +5,7 @@ namespace client
 {
     public class tests
     {
-        public DateTime date { get; set; }
+        public string date { get; set; }
         public List<batch> batch;
         public List<pages_tests> pages_tests;
 

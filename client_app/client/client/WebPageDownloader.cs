@@ -27,21 +27,24 @@ namespace client
             var z = new pages_tests();
             res.tests[0].pages_tests.Add(z);
             res.tests[0].pages_tests[0].download_time = elapsedMs;
-            res.ipv4 = "bleeee";
+            res.ipv4 = "test1";
             var xyz = new page_connections();
             xyz.page_2.address = "ala_ma_kota";
             res.tests[0].pages_tests[0].page.page_connections.Add(xyz);
             var x = new batch();
             res.tests[0].batch.Add(x);
-
+            DateTime theDate = DateTime.Now;
+            theDate.ToString("yyyy-MM-dd H:mm:ss");
+            res.tests[0].date = theDate.ToString();
             res.tests[0].batch[0].levels = 1;
+            res.tests[0].pages_tests[0].redirection.address = "ala";
             res.tests[0].batch[0].page_address.address = "tomekk";
             //END
 
             //Serializacja do JSONA
             var data = JsonConvert.SerializeObject(res);
 
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://127.0.0.1:8000/testing/api/users");
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://metlando.pythonanywhere.com/api/users/");
             httpWebRequest.ContentType = "application/json";
             httpWebRequest.Method = "POST";
           

@@ -276,26 +276,15 @@ namespace client
 
         private List<string> DeleteVisitedLink(List<string> lista)
         {
-            bool flag = false;
-            string x = null;
-            foreach (string el in lista)
+            for (int i = lista.Count-1; i > 0; i--)
             {
                 foreach (var v in Visited)
                 {
-                    if (v == el)
+                    if (v == lista[i])
                     {
-                        flag = true;
-                        x = el;
-                        break;
+                        lista.Remove(lista[i]);
                     }
                 }
-                if(flag)
-                break;
-            }
-            if (flag)
-            {
-                lista.Remove(x);
-                DeleteVisitedLink(lista);
             }
             return lista;
         }

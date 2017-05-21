@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 
 namespace client
 {
@@ -8,10 +9,17 @@ namespace client
         public int response_code { get; set; }
         public int download_time { get; set; }
         public page page;
+        public redirection redirection { get; set; }
 
         public pages_tests()
         {
             this.page = new page();
+            this.redirection = new redirection();
         }
+    }
+
+    public class redirection
+    {
+        public string address { get; set; }
     }
 }
