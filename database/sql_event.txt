@@ -1,41 +1,40 @@
-show events;
 drop event if exists lm_w_percentage;
 DELIMITER |
 CREATE EVENT `lm_w_percentage`
-ON SCHEDULE EVERY 50 second
+ON SCHEDULE EVERY 1 hour
 ON COMPLETION PRESERVE
 ENABLE
 DO
 Begin
-	DECLARE finished INTEGER DEFAULT 0;
-    declare total_pt integer;
-	declare working integer;
+	DECLARE finished long DEFAULT 0;
+    declare total_pt bigint;
+	declare my_w bigint;
     
 	declare tmp decimal(5,2);
-	declare ids integer;
-	declare cur1 cursor for select p.id from pages p;
+	declare ids long;
+	declare cur1 cursor for select p.id from Pages p;
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = 1;
 	
     open cur1;
 	read_loop: LOOP
 	fetch cur1 into ids;
 	 IF finished=1 THEN
-		  LEAVE read_loop;
+	   LEAVE read_loop;
 	 END IF;
      
-	select count(pt.id) into total_pt from pages_tests pt 
-	join pages p on p.id=pt.page_id
-    join tests t on t.id=pt.test_id
+	select count(pt.id) into total_pt from Pages_Tests pt 
+	join Pages p on p.id=pt.page_id
+    join Tests t on t.id=pt.test_id
     where t.date>=(CURDATE() - INTERVAL 30 DAY) and p.id=ids;
     
-	select count(pt.is_working) into working from pages_tests pt 
-	join pages p on p.id=pt.page_id 
-    join tests t on t.id=pt.test_id
+	select count(pt.is_working) into my_w from Pages_Tests pt 
+	join Pages p on p.id=pt.page_id 
+    join Tests t on t.id=pt.test_id
     where (pt.is_working=1 or pt.is_working=1) and (t.date>=CURDATE() - INTERVAL 30 DAY) and p.id=ids;
-    
+
 	if total_pt>0 then
-		set tmp=working/total_pt*100.0;
-        update pages set last_month_working_percentage=tmp where id=ids;
+		set tmp = my_w/total_pt*100.0;
+        update Pages set last_month_working_percentage=tmp where id=ids;
 	END IF;
 	END LOOP;
     close cur1;

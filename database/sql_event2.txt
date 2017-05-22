@@ -1,44 +1,44 @@
 drop event if exists lm_w_percentage_b;
 DELIMITER |
 CREATE EVENT `lm_w_percentage_b`
-ON SCHEDULE EVERY 50 second
+ON SCHEDULE EVERY 1 hour
 ON COMPLETION PRESERVE
 ENABLE
 DO
 Begin
-	DECLARE finished INTEGER DEFAULT 0;
-    declare total_b integer;
-	declare working_b integer;
+	DECLARE my_finished long DEFAULT 0;
+    declare my_total_b bigint;
+	declare my_w_b bigint;
     
-	declare tmp decimal(5,2);
-	declare ids integer;
-	declare cur1 cursor for select b.id from buttons b;
-    DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = 1;
-	open cur1;
-	read_loop: LOOP
-	fetch cur1 into ids;
-	 IF finished=1 THEN
-		  LEAVE read_loop;
-	 END IF;
+	declare tmp2 decimal(5,2);
+	declare ids2 long;
+	declare cur2 cursor for select b.id from Buttons b;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET my_finished = 1;
+    
+	open cur2;
+	read_loop2: LOOP
+	fetch cur2 into ids2;
+	IF my_finished=1 THEN
+	LEAVE read_loop2;
+	END IF;
      
-     
-	select count(b.id) into total_b from buttons b 
-    join t_p_b on t_p_b.button_id=b.id
-    join pages_tests pt on pt.id=t_p_b.page_test_id
-    join tests t on t.id=pt.test_id
-    where t.date>=(CURDATE() - INTERVAL 30 DAY ) and b.id=ids;
+	select count(b.id) into my_total_b from Buttons b 
+    join T_P_B tpb on tpb.button_id=b.id
+    join Pages_Tests pt on pt.id=tpb.page_test_id
+    join Tests t on t.id=pt.test_id
+    where t.date>=(CURDATE() - INTERVAL 30 DAY ) and b.id=ids2;
     
-	select count(t_p_b.is_working) into working_b from buttons b 
-    join t_p_b on t_p_b.button_id=b.id
-    join pages_tests pt on pt.id=t_p_b.page_test_id
-    join tests t on t.id=pt.test_id
-    where (t_p_b.is_working=1 or t_p_b.is_working=True) and (t.date>=CURDATE() - INTERVAL 30 DAY) and b.id=ids;
+	select count(tpb.is_working) into my_w_b from Buttons b 
+    join T_P_B tpb on tpb.button_id=b.id
+    join Pages_Tests pt on pt.id=tpb.page_test_id
+    join Tests t on t.id=pt.test_id
+    where (tpb.is_working=1 or tpb.is_working=True) and (t.date>=CURDATE() - INTERVAL 30 DAY) and b.id=ids2;
     
-	if total_b>0 then
-		set tmp=working_b/total_b*100.0;
-        update buttons set last_month_working_percentage=tmp where id=ids;
+	if my_total_b>0 then
+		set tmp2 = my_w_b/my_total_b*100.0;
+        update Buttons set last_month_working_percentage=tmp2 where id=ids2;
 	END IF;
 	END LOOP;
-    close cur1;
+    close cur2;
 end |
 DELIMITER ; 
