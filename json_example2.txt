@@ -1,0 +1,48 @@
+{
+  "tests": [
+    {
+      "batch": [
+        {
+          "page_address": {
+            "address": "tomekk"
+          },
+          "levels": 1
+        }
+      ],
+      "pages_tests": [
+        {
+          "page": {
+            "host": {
+              "domain_name": null,
+              "ipv4": null
+            },
+            "page_connections": [
+              {
+                "page_2": {
+                  "address": "ala_ma_kota"
+                }
+              }
+            ],
+            "buttons": null,
+            "address": null,
+            "weight": 0,
+            "encoding": null,
+            "cookies_present": false,
+            "avg_download_time": 0,
+            "global_working_percentage": 0.0,
+            "last_month_working_percentage": 0.0,
+            "force_test": false,
+            "weight_w_pictures": 0
+            "is_working": false,
+            "response_code": 0,
+            "download_time": 395,
+            "redirection": null
+        }
+      ],
+      "date": "2017-05-21 23:15:13"
+    }
+  ],
+  "ipv4": "bleeee",
+  "transfer_speed": 0,
+  "mac_address": null
+}

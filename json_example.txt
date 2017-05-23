@@ -1,0 +1,80 @@
+{
+        "ipv4": "12e",
+        "transfer_speed": "12.00",
+        "mac_address": "edasdsad",
+        "tests": [
+            {
+                "date": "2017-05-04T12:44:34Z",
+                "batch": [
+                    {
+                        "levels": 3,
+                        "page_address": {
+                            "address": "rgdf1"
+                        }
+                    }
+                ],
+                "pages_tests": [
+                    {
+                        "is_working": true,
+                        "response_code": 12,
+                        "download_time": 11212,
+                        "page": {
+                            "address": "rgdf1",
+                            "weight": 32,
+                            "encoding": "23",
+                            "cookies_present": true,
+
+                            "weight_w_pictures": null,
+                            "host": {
+                                "domain_name": "dsfsd",
+                                "ipv4": "234243"
+                            },
+                            "page_connections": [
+                                {
+                                    "page_2": {
+                                        "address": "kllklll"
+                                    }
+                                },
+				{
+                                    "page_2": {
+                                        "address": "qweqwe"
+                                    }
+                                }
+                            ],
+                            "buttons": [
+                                {
+                                    "locator": "6456y5fgsh sgfh gfh fgsh fsgh shg",
+                                    "global_working_percentage": "12.00",
+                                    "last_month_working_percentage": "55.00",
+                                    "t_p_b": [
+                                        {
+                                            "is_working": true
+                                        }
+                                    ]
+                                },
+                                {
+                                    "locator": "hsfghfgs b 54 yhfg hf hsf hsfvs v",
+                                    "global_working_percentage": "77.00",
+                                    "last_month_working_percentage": "55.00",
+                                    "t_p_b": [
+                                        {
+                                            "is_working": false
+                                        }
+                                    ]
+                                },
+                                {
+                                    "locator": "gf 54w gehbh avfew ttdhagrzz",
+                                    "global_working_percentage": null,
+                                    "last_month_working_percentage": null,
+                                    "t_p_b": [
+					{
+                                            "is_working": true
+                                        }
+				    ]
+                                }
+                            ]
+                        },
+                        "redirection": {
+                            "address": "22www"
+                        }
+                    }]}]}
