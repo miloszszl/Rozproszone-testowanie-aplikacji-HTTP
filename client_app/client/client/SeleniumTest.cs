@@ -128,7 +128,6 @@ namespace client
         {
             IReadOnlyCollection<IWebElement> links = driver.FindElements(By.XPath("//a"));
 
-            
             var PageLinks = new List<string>();
             var SubPageLinks = new List<string>();
             var PageUrl = driver.Url;
