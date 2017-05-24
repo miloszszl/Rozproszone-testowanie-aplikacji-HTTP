@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace client
 {
@@ -13,6 +14,26 @@ namespace client
         public Result()
         {
             this.tests = new List<tests>();
+        }
+
+        public static Result Initialize()
+        {
+            var res = new Result();
+            var y = new tests();
+            var z = new pages_tests();
+            var x = new batch();
+            var xyz = new page_connections();
+
+            res.tests.Add(y);
+            res.tests[0].pages_tests.Add(z);
+            res.tests[0].pages_tests[0].page.page_connections.Add(xyz);
+            res.tests[0].batch.Add(x);
+
+            DateTime theDate = DateTime.Now;
+            theDate.ToString("yyyy-MM-dd H:mm:ss");
+            res.tests[0].date = theDate.ToString();
+
+            return res;
         }
     }
 }
