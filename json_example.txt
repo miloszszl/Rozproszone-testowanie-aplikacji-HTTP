@@ -1,4 +1,7 @@
 {
+        "secret": {
+            "key": "434420e6793c110e6d68c39e574baea0c3b4bfdd6e7f70b265818a7250681d6d"
+         },
         "ipv4": "12e",
         "transfer_speed": "12.00",
         "mac_address": "edasdsad",

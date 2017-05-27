@@ -328,12 +328,16 @@ class UserViewSet(APIView):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             x = serializer.create(request.data)
+            if x is None:
+                return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
             serializer.save()
             return Response({"answer":"ok"},status=status.HTTP_201_CREATED)#{"answer":"ok"}   x for test purposes
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, format=None):
         snippets = User.objects.all()
+        for x in snippets:
+            x.secret={"key":"hidden"}
         serializer = UserSerializer(snippets, many=True)
         return Response(serializer.data)
 
