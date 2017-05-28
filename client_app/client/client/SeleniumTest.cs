@@ -12,7 +12,7 @@ namespace client
     {
         private IWebDriver driver;
         WebDriverWait wait;
-        private List<batch> ResultLink = new List<batch>();
+        private List<page_connections> ResultLink = new List<page_connections>();
         private List<string> Visited = new List<string>();
 
         public SeleniumTest()
@@ -21,7 +21,7 @@ namespace client
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
         }
 
-        public void Test(string Adress, int Levels)
+        public List<page_connections> Test(string Adress, int Levels)
         {
             try
             {
@@ -62,20 +62,9 @@ namespace client
             //Zamykam driver i przeglądarkę po testach
             driver.Close();
             driver.Quit();
-           
+            return ResultLink;
         }
-
-
-        /// <summary>
-        /// Metoda sprawdzająca czy jquery przestało działać na stronie. Do omówienia czy przydatna.
-        /// </summary>
-        private void WaitForReady()
-        {
-            while ((long)((IJavaScriptExecutor)driver).ExecuteScript("return jQuery.active") != 0)
-            {
-                Thread.Sleep(50);
-            }
-        }
+        
 
         /// <summary>
         /// Metoda sprawdzająca czy elementy są klikalne.
@@ -146,7 +135,7 @@ namespace client
                 PageLinks.RemoveAll(prej);
 
 
-                AddLink(PageLinks, currentLevel);
+                AddLink(PageLinks);
 
                 foreach (string link in PageLinks)
                 {
@@ -164,7 +153,7 @@ namespace client
                         links = driver.FindElements(By.XPath("//a"));
                         SubPageLinks = GetLinks(links);
 
-                        AddLink(SubPageLinks, currentLevel); //zapis linków z 1 poziomu (0 - strona główna)
+                        AddLink(SubPageLinks); //zapis linków z 1 poziomu (0 - strona główna)
 
                         //sprawdzenie czy wchodzimy jeszcze głębiej
                         if (currentLevel < levels)
@@ -215,14 +204,16 @@ namespace client
         /// Dodanie linków z aktualnej strony do tablicy ResultLink
         /// </summary>
         /// <param name="lvl"></param>
-        private void AddLink(List<string> links,int lvl)
+        private void AddLink(List<string> links)
         {
             foreach (var ln in links)
             {
-                var x = new batch();
-                x.levels = lvl;
-                x.page_address.address = ln;
+                
+                var x = new page_connections();
+                x.page_2.address = ln;
                 ResultLink.Add(x);
+
+
             }
         }
 
@@ -234,7 +225,7 @@ namespace client
             IReadOnlyCollection<IWebElement> links = driver.FindElements(By.XPath("//a"));
             var ln = GetLinks(links);
             if (Add)
-                AddLink(ln,curlevel);
+                AddLink(ln);
 
             //usunięcie już odwiedzonych
             ln = DeleteVisitedLink(ln);

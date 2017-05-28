@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace client
@@ -20,7 +21,11 @@ namespace client
             return textbox1.Text;
 
         }
+        public static int GetLevel()
+        {
+            return Convert.ToInt32(textbox.Text);
 
+        }
         private string[] GetAddressesAndLevels()
         {
             string[] tab = new string[2];
@@ -88,13 +93,16 @@ namespace client
                     tab[0]= CheckAdress.CorrectAdress(tab[0]);
                 }
                 TestController tc = new TestController(tab[0],level);
-                //tc.Test();
 
+                tc.Test();
+
+                // po teście automatyczny powrót - oczywiście nie dział -.-
                 this.Show();
                 label1.Text = "Choose addresses to test";
                 button1.Text = "TEST";
                 test_clicked = false;
                 notifyIcon1.Visible = false;
+
             }
             else
             {
@@ -107,10 +115,8 @@ namespace client
 
         private void groupBox1_Enter(object sender, EventArgs e)
         {
-
         }
 
-        
 
         private void Form1_Resize(object sender, EventArgs e)
         {
@@ -129,6 +135,9 @@ namespace client
         {
             this.Show();
             this.WindowState = FormWindowState.Normal;
+            label1.Text = "Choose addresses to test";
+            button1.Text = "TEST";
+            test_clicked = false;
             notifyIcon1.Visible = false;
         }
 
@@ -141,5 +150,6 @@ namespace client
         {
 
         }
+
     }
 }

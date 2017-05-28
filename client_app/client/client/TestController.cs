@@ -1,4 +1,6 @@
-﻿namespace client
+﻿using System.Net;
+
+namespace client
 {
     public class TestController
     {
@@ -13,11 +15,16 @@
 
         public void Test()
         {
+            
             WebPageDownloader wbd = new WebPageDownloader();
-            wbd.TestDownload(Address);
-
+            int elapsedTime = wbd.TestDownload(Address);
+            
             SeleniumTest Selenium = new SeleniumTest();
-            Selenium.Test(Address, Levels);
+            var x = Selenium.Test(Address, Levels);
+
+            var res = Message.Create(elapsedTime);
+            res.tests[0].pages_tests[0].page.page_connections = x;
+            Communication.SendMessage(res);
         }
 
     }

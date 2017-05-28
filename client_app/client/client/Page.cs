@@ -22,6 +22,7 @@ namespace client
             this.host = new host();
             this.page_connections = new List<page_connections>();
         }
+
     }
 
     public class host
@@ -38,6 +39,7 @@ namespace client
         {
             this.page_2 = new page_2();
         }
+
     }
 
     public class page_2
