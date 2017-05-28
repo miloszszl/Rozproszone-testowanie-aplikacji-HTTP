@@ -6,19 +6,20 @@ namespace client
 {
     public class WebPageDownloader
     {
-        public void TestDownload(string address)
+        public int TestDownload(string address)
         {
             WebClient client = new WebClient();
-            string htmlCode;
+           string htmlCode;
 
             var watch = System.Diagnostics.Stopwatch.StartNew();
             htmlCode = client.DownloadString(address);
             watch.Stop();
 
+            int elapsedMs = Convert.ToInt32(watch.ElapsedMilliseconds);
+            return elapsedMs;
+
             //Stworzenie obiektów i wypełnienie danymi - to się wrzuci do osobnej metody
             var res = Result.Initialize();
-            int elapsedMs = Convert.ToInt32(watch.ElapsedMilliseconds);
-            
             res.tests[0].pages_tests[0].download_time = elapsedMs;
 
             res.ipv4 = "test1";

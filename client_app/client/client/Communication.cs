@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Security.Cryptography;
+using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -10,6 +12,14 @@ namespace client
     {
         public static bool SendMessage(Result obj)
         {
+            //utworzenie sekretnego klucza
+            SHA256 sha256 = SHA256.Create();
+            byte[] bytes = Encoding.UTF8.GetBytes(obj.mac_address + "trochegruzu*74" + obj.ipv4 + "posolecietrche@11");
+            byte[] hash = sha256.ComputeHash(bytes);
+
+            obj.secret.key = GetStringFromHash(hash);
+
+
             //Serializacja do JSONA
             var data = JsonConvert.SerializeObject(obj);
 
@@ -57,5 +67,16 @@ namespace client
             var rec = (Dictionary<string, string>)JsonConvert.DeserializeObject(result);
             return rec; 
         }
+
+        private static string GetStringFromHash(byte[] hash)
+        {
+            StringBuilder result = new StringBuilder();
+            for (int i = 0; i < hash.Length; i++)
+            {
+                result.Append(hash[i].ToString("X2"));
+            }
+            return result.ToString();
+        }
+
     }
 }

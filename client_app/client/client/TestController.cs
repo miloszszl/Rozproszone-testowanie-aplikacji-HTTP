@@ -14,7 +14,7 @@
         public void Test()
         {
             WebPageDownloader wbd = new WebPageDownloader();
-            wbd.TestDownload("https://www.google.pl/");
+            wbd.TestDownload(Address);
 
             SeleniumTest Selenium = new SeleniumTest();
             Selenium.Test(Address, Levels);

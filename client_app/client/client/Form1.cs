@@ -67,34 +67,42 @@ namespace client
                 button1.Text = "STOP";
                 test_clicked = true;
 
+
+                
                 int level = 0;
                 var tab = GetAddressesAndLevels();
-                try
-                {
+                //sprawdzanie poprawnosci Lvla
+                int n;
+                if(int.TryParse(tab[1], out n))
                     level = Convert.ToInt32(tab[1]);
-                }
-                catch (Exception exception)
+                else
                 {
-                    //TODO: Obsługa błędu, źle wpisane dane (np. litery)
+                    Form f2 = new Form2();
+                    f2.Text = "Levels invalid!";
+                    return;
                 }
-                
+
                 //sprawdzenie poprawności adresu
                 if (!CheckAdress.CheckAdressMethod(tab[0]))
                 {
                     tab[0]= CheckAdress.CorrectAdress(tab[0]);
                 }
                 TestController tc = new TestController(tab[0],level);
-                tc.Test();
+                //tc.Test();
 
+                this.Show();
+                label1.Text = "Choose addresses to test";
+                button1.Text = "TEST";
+                test_clicked = false;
+                notifyIcon1.Visible = false;
             }
             else
             {
                 label1.Text = "Choose addresses to test";
                 button1.Text = "TEST";
                 test_clicked = false;
-
             }
-            
+
         }
 
         private void groupBox1_Enter(object sender, EventArgs e)

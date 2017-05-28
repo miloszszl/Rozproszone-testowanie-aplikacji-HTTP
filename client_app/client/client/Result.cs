@@ -8,12 +8,13 @@ namespace client
         public string ipv4 { get; set; }
         public int transfer_speed { get; set; }
         public string mac_address { get; set; }
-
+        public secret secret;
         public List<tests> tests;
 
-        public Result()
+        private Result()
         {
             this.tests = new List<tests>();
+            this.secret = new secret();
         }
 
         public static Result Initialize()
@@ -23,17 +24,23 @@ namespace client
             var z = new pages_tests();
             var x = new batch();
             var xyz = new page_connections();
+            var yxz = new secret();
 
             res.tests.Add(y);
             res.tests[0].pages_tests.Add(z);
             res.tests[0].pages_tests[0].page.page_connections.Add(xyz);
             res.tests[0].batch.Add(x);
-
+            
             DateTime theDate = DateTime.Now;
             theDate.ToString("yyyy-MM-dd H:mm:ss");
             res.tests[0].date = theDate.ToString();
 
             return res;
         }
+    }
+
+    public class secret
+    {
+        public string key { get; set; }
     }
 }
