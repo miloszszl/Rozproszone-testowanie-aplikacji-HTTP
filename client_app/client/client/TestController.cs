@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Net;
 
 namespace client
 {
@@ -20,13 +21,15 @@ namespace client
 
             var res = Message.Create(tab);
 
-            SeleniumTest Selenium = new SeleniumTest();
-            res.tests[0].pages_tests[0].page.page_connections = Selenium.CheckLevels(Address, Levels);
+            SeleniumTest Selenium = new SeleniumTest(Address);
+           
             
             res.tests[0].pages_tests[0].page.cookies_present = Selenium.CheckCookies();
 
-            //wywołanie destruktora
-            Selenium = null;
+            res.tests[0].pages_tests[0].page.buttons = Selenium.CheckButton();
+            res.tests[0].pages_tests[0].page.page_connections = Selenium.CheckLevels(Levels);
+            //zakończenie testów Selenium
+            Selenium.Close();
 
 
             Communication.SendMessage(res);

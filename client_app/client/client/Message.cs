@@ -7,11 +7,13 @@ namespace client
 {
     public abstract class Message
     {
+
         /// <summary>
         /// Tworzy obiekt Result i wypełnia podstawowymi danymi
         /// </summary>
         /// <param name="tab">Tablica zawierająca [0] - czas pobierania, [1] - wagę strony</param>
         /// <returns>Wypełniony obiekt</returns>
+        
         public static Result Create(int[] tab)
         {
             //Stworzenie obiektów i wypełnienie danymi 
@@ -28,6 +30,7 @@ namespace client
             {
                 var ip = Dns.GetHostAddresses(myUri.Host)[0];
                 res.ipv4 = ip.ToString();
+                res.tests[0].pages_tests[0].page.host.ipv4 = ip.ToString();
             }
             catch (Exception e)
             {
@@ -41,12 +44,20 @@ namespace client
 
            // res.tests[0].pages_tests[0].page.page_connections[0].page_2.address = ;
 
-           //waga strony, czas i adres mac klienta 
+           //waga strony, czas, działanie i adres mac klienta
             res.tests[0].pages_tests[0].page.weight = tab[1];
             res.tests[0].pages_tests[0].page.address = adr;
             res.tests[0].pages_tests[0].download_time = tab[0];
+            if (tab[0] > 0)
+            {
+                res.tests[0].pages_tests[0].is_working = true;
+            }
             res.mac_address = GetMac();
 
+            // dodanie 
+            res.tests[0].pages_tests[0].page.host.domain_name = adr;
+
+            
             //przekierowanie
             res.tests[0].pages_tests[0].redirection.address = null;
 

@@ -14,24 +14,7 @@ namespace client
         private List<page_connections> ResultLink = new List<page_connections>();
         private List<string> Visited = new List<string>();
 
-        public SeleniumTest()
-        {
-        }
-
-        ~SeleniumTest()
-        {
-            //Zamykam driver i przeglądarkę po testach
-            driver.Close();
-            driver.Quit();
-        }
-
-        /// <summary>
-        /// Sprawdzanie poziomu zagłębień
-        /// </summary>
-        /// <param name="Adress">Adres strony</param>
-        /// <param name="Levels">Poziom</param>
-        /// <returns></returns>
-        public List<page_connections> CheckLevels(string Adress, int Levels)
+        public SeleniumTest(string Adress)
         {
             try
             {
@@ -45,18 +28,33 @@ namespace client
                 //Błąd drivera, zamykam przeglądarkę
                 driver.Quit();
                 driver.Close();
-                return null;
             }
+        }
+
+        public void Close()
+        {
+            //Zamykam driver i przeglądarkę po testach
+            driver.Close();
+            driver.Quit();
+        }
+
+        /// <summary>
+        /// Sprawdzanie poziomu zagłębień
+        /// </summary>
+        /// <param name="Adress">Adres strony</param>
+        /// <param name="Levels">Poziom</param>
+        /// <returns></returns>
+        public List<page_connections> CheckLevels(int Levels)
+        {
 
             //sprawdzanie zagnieżdzeń
-            CheckLevels(Levels);
-
+            CheckLevelsP(Levels);
 
             return ResultLink;
         }
 
 
-        public List<string> CheckButton()
+        public List<buttons> CheckButton()
         {
 
             IReadOnlyCollection<IWebElement> buttons = null;
@@ -73,11 +71,35 @@ namespace client
                 //Jeśli strona wczytuje się dłużej jak 60 sekund - jakieś pomysły?
             }
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+
             //Metody zwracają słowniki z wynikami. Można je przetwarzać w dowolny sposób. 
             var buttonsChecked = Check(buttons);
             var inputChecked = Check(input);
 
-            return null;
+            List<buttons> result = new List<buttons>();
+            foreach (var element in buttonsChecked)
+            {
+                var x = new buttons();
+                x.locator = element.Key;
+                var y = new t_p_b();
+                y.is_working = element.Value;
+
+                x.t_p_b.Add(y);
+                result.Add(x);
+            }
+
+            foreach (var element in inputChecked)
+            {
+                var x = new buttons();
+                x.locator = element.Key;
+                var y = new t_p_b();
+                y.is_working = element.Value;
+
+                x.t_p_b.Add(y);
+                result.Add(x);
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -98,10 +120,11 @@ namespace client
         /// Metoda sprawdzająca czy elementy są klikalne.
         /// </summary>
         /// <param name="collection"></param>
-        private Dictionary<string, string> Check(IReadOnlyCollection<IWebElement> collection)
+        /// <returns>Lokalizacja i czy działa</returns>
+        private Dictionary<string, bool> Check(IReadOnlyCollection<IWebElement> collection)
         {
-           wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
-            Dictionary<string, string> result = new Dictionary<string, string>();
+            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
+            Dictionary<string, bool> result = new Dictionary<string, bool>();
             if (collection == null)
                 return result;
 
@@ -109,26 +132,34 @@ namespace client
             {
                 try
                 {
-                    while (!button.Enabled)
-                        Thread.Sleep(50);
-                    if (button.Displayed)
+                    int loop = 0;
+                    while (!button.Enabled && loop < 10)
                     {
-                        try
+                        Thread.Sleep(1000);
+                        loop++;
+                    }
+                    if (loop < 10)
+                    {
+                        if (button.Displayed)
                         {
-                            ((IJavaScriptExecutor) driver).ExecuteScript("arguments[0].scrollIntoView(true);", button);
-                        }
-                        catch (Exception)
-                        {
-                            //Do elementu nie można scrollować.
-                        }
+                            try
+                            {
+                                ((IJavaScriptExecutor) driver).ExecuteScript("arguments[0].scrollIntoView(true);",
+                                    button);
+                            }
+                            catch (Exception)
+                            {
+                                //Do elementu nie można scrollować.
+                            }
 
-                        if (wait.Until(ExpectedConditions.ElementToBeClickable(button)) == null)
-                        {
-                            result.Add(button.Text, "nie działa");
-                        }
-                        else
-                        {
-                            result.Add(button.Text, "działa");
+                            if (wait.Until(ExpectedConditions.ElementToBeClickable(button)) == null)
+                            {
+                                result.Add(button.Location.ToString(), false);
+                            }
+                            else
+                            {
+                                result.Add(button.Location.ToString(), true);
+                            }
                         }
                     }
                 }
@@ -141,59 +172,73 @@ namespace client
             return result;
         }
 
+        private List<string> RemoveRedundantLinks(List<string> li)
+        {
+            //usuwanie wszystkich zbędnych linków 
+            Predicate<string> pre = delegate (string url) { return url == driver.Url; };
+            li.RemoveAll(pre);
+            Predicate<string> prej = delegate (string url) { return url == null; };
+            li.RemoveAll(prej);
+            prej = delegate (string url) { return url.Contains("javascript"); };
+            li.RemoveAll(prej);
+            prej = delegate (string url) { return url.Contains("None"); };
+            li.RemoveAll(prej);
+            return li;
+        }
 
-        private void CheckLevels(int levels)
+        private void CheckLevelsP(int levels)
         {
             IReadOnlyCollection<IWebElement> links = driver.FindElements(By.XPath("//a"));
 
-            var PageLinks = new List<string>();
+            var MainPageLinks = new List<string>();
             var SubPageLinks = new List<string>();
-            var PageUrl = driver.Url;
-            int currentLevel = 0;
+            var CurrentURL = driver.Url;
+            int CurrentLevel = 0;
             try
             {
                 //zbieranie wszystkich linków ze strony głównej (tag <a>)
-                PageLinks = GetLinks(links);
+                MainPageLinks = GetLinks(links);
+                //usuwanie wszystkich zbędnych linków 
+                MainPageLinks =  RemoveRedundantLinks(MainPageLinks);
+                //dodanie linków do result
+                AddLink(MainPageLinks);
 
-                //usuwanie wszystkich linków kierujących do strony głównej
-                Predicate<string> pre = delegate(string url) { return url == PageUrl; };
-                PageLinks.RemoveAll(pre);
-                Predicate<string> prej = delegate(string url) { return url == null; };
-                PageLinks.RemoveAll(prej);
-                prej = delegate(string url) { return url.Contains("javascript"); };
-                PageLinks.RemoveAll(prej);
+                //dla kazdego linku na stronie glownej
+               for(int i = MainPageLinks.Count-1; i> 0; i--)
+               {
+                   CurrentLevel = 1;
+                   string link = MainPageLinks[i];
 
+                    //sprawdzenie czy juz tu nie bylismy
+                   if (Visited.Contains(link))
+                       continue;
 
-                AddLink(PageLinks);
-
-                foreach (string link in PageLinks)
-                {
-                    currentLevel = 0;
-                    if (currentLevel < levels)
+                    if (CurrentLevel < levels)
                     {
                         driver.Url = link;
-                        currentLevel++;
+                        CurrentLevel++;
                         Visited.Add(link);
 
-                        //usunięcie wszystkich stron z PageLinks kierujących pod ten link
-                        Predicate<string> preAdr = delegate(string url) { return url == link; };
-                        PageLinks.RemoveAll(preAdr);
+                        ////usunięcie wszystkich stron z MainPageLinks kierujących pod ten link - zle
+                        //Predicate<string> preAdr = delegate(string url) { return url == link; };
+                        //MainPageLinks.RemoveAll(preAdr);
 
+                        //znalezienie linków na stronie
                         links = driver.FindElements(By.XPath("//a"));
                         SubPageLinks = GetLinks(links);
 
                         AddLink(SubPageLinks); //zapis linków z 1 poziomu (0 - strona główna)
 
                         //sprawdzenie czy wchodzimy jeszcze głębiej
-                        if (currentLevel < levels)
+                        if (CurrentLevel < levels)
                         {
-                            DeleteVisitedLink(SubPageLinks);
+                            SubPageLinks = DeleteVisitedLink(SubPageLinks);
                             if (SubPageLinks != null)
                             {
                                 driver.Url = SubPageLinks[0];
-                                currentLevel++;
+                                CurrentLevel++;
                                 Visited.Add(driver.Url);
-                                TestOnePage(currentLevel, levels);
+                                TestOnePage(CurrentLevel, levels);
                             }
                         }
                     }
@@ -206,6 +251,11 @@ namespace client
             }
             catch (Exception e)
             {
+                Form2 x = new Form2();
+                x.Text = "Błąd!";
+                x.LabelText = e.Message;
+                x.Show();
+                
             }
         }
 
@@ -280,7 +330,13 @@ namespace client
             }
             else
             {
-                driver.Url = ln[0];
+                try
+                {
+                    driver.Url = ln[0];
+                }
+                catch (Exception e)
+                {
+                }
                 Visited.Add(ln[0]);
                 curlevel++;
                 TestOnePage(curlevel, level);

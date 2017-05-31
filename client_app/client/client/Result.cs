@@ -30,7 +30,7 @@ namespace client
             res.tests[0].pages_tests.Add(z);
             res.tests[0].pages_tests[0].page.page_connections.Add(xyz);
             res.tests[0].batch.Add(x);
-            
+
             DateTime theDate = DateTime.Now;
             theDate.ToString("yyyy-MM-dd H:mm:ss");
             res.tests[0].date = theDate.ToString();
