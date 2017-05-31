@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace client
 {
@@ -6,20 +8,11 @@ namespace client
     {
         public static bool CheckAdressMethod(string adr)
         {
-            if (adr.StartsWith("http://www."))
+            if (adr.StartsWith("http://www.") || adr.StartsWith("https://www."))
                 return true;
-            if (adr.StartsWith("https://www."))
+            if (isIP(adr))
                 return true;
             return false;
-        }
-
-        public static int CorrectLevel(double level)
-        {
-            if (level <= 0)
-            {
-                //TODO: OBSŁUGA BŁĘDU
-            }
-            return Convert.ToInt32(level);
         }
 
         public static string CorrectAdress(string adr)
@@ -27,6 +20,23 @@ namespace client
             if (adr.StartsWith("www"))
                 return "http://" + adr;
             return "http://www." + adr;
+        }
+
+        private static bool isIP(string adr)
+        {
+            if (String.IsNullOrWhiteSpace(adr))
+            {
+                return false;
+            }
+
+            string[] splitValues = adr.Split('.');
+            if (splitValues.Length != 4)
+            {
+                return false;
+            }
+
+            byte tempForParsing;
+            return splitValues.All(r => byte.TryParse(r, out tempForParsing));
         }
     }
 }

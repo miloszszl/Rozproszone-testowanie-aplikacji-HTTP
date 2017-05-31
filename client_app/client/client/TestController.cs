@@ -1,4 +1,7 @@
-﻿namespace client
+﻿using System.Collections.Generic;
+using System.Net;
+
+namespace client
 {
     public class TestController
     {
@@ -14,10 +17,22 @@
         public void Test()
         {
             WebPageDownloader wbd = new WebPageDownloader();
-            wbd.TestDownload("https://www.google.pl/");
+            int[] tab = wbd.TestDownload(Address);
 
-            SeleniumTest Selenium = new SeleniumTest();
-            Selenium.Test(Address, Levels);
+            var res = Message.Create(tab);
+
+            SeleniumTest Selenium = new SeleniumTest(Address);
+           
+            
+            res.tests[0].pages_tests[0].page.cookies_present = Selenium.CheckCookies();
+
+            res.tests[0].pages_tests[0].page.buttons = Selenium.CheckButton();
+            res.tests[0].pages_tests[0].page.page_connections = Selenium.CheckLevels(Levels);
+            //zakończenie testów Selenium
+            Selenium.Close();
+
+
+            Communication.SendMessage(res);
         }
 
     }

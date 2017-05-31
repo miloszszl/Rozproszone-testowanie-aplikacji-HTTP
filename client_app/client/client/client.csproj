@@ -74,6 +74,7 @@
     <Compile Include="Form2.Designer.cs">
       <DependentUpon>Form2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Message.cs" />
     <Compile Include="page.cs" />
     <Compile Include="pages_tests.cs" />
     <Compile Include="Program.cs" />
@@ -83,7 +84,6 @@
     <Compile Include="tests.cs" />
     <Compile Include="TestController.cs" />
     <Compile Include="batch.cs" />
-    <Compile Include="WebPage.cs" />
     <Compile Include="WebPageDownloader.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>

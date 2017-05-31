@@ -22,6 +22,7 @@ namespace client
             this.host = new host();
             this.page_connections = new List<page_connections>();
         }
+
     }
 
     public class host
@@ -38,6 +39,7 @@ namespace client
         {
             this.page_2 = new page_2();
         }
+
     }
 
     public class page_2
@@ -48,13 +50,13 @@ namespace client
     public class buttons
     {
         public string locator { get; set; }
-        public double global_working_percentage { get; set; }
-        public double last_month_working_percentage { get; set; }
-        public t_p_b t_p_b;
+        public string global_working_percentage { get; set; }
+        public string last_month_working_percentage { get; set; }
+        public List<t_p_b> t_p_b;
 
         public buttons()
         {
-            this.t_p_b = new t_p_b();
+            this.t_p_b = new List<t_p_b>();
         }
     }
 

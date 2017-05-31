@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace client
@@ -17,10 +18,14 @@ namespace client
 
         public static  string GetAddress()
         {
-            return textbox1.Text;
+            return textbox.Text;
 
         }
+        public static int GetLevel()
+        {
+            return Convert.ToInt32(textbox1.Text);
 
+        }
         private string[] GetAddressesAndLevels()
         {
             string[] tab = new string[2];
@@ -67,24 +72,36 @@ namespace client
                 button1.Text = "STOP";
                 test_clicked = true;
 
+
+                
                 int level = 0;
                 var tab = GetAddressesAndLevels();
-                try
-                {
+                //sprawdzanie poprawnosci Lvla
+                int n;
+                if(int.TryParse(tab[1], out n))
                     level = Convert.ToInt32(tab[1]);
-                }
-                catch (Exception exception)
+                else
                 {
-                    //TODO: Obsługa błędu, źle wpisane dane (np. litery)
+                    Form f2 = new Form2();
+                    f2.Text = "Levels invalid!";
+                    return;
                 }
-                
+
                 //sprawdzenie poprawności adresu
                 if (!CheckAdress.CheckAdressMethod(tab[0]))
                 {
                     tab[0]= CheckAdress.CorrectAdress(tab[0]);
                 }
                 TestController tc = new TestController(tab[0],level);
+
                 tc.Test();
+
+                // po teście automatyczny powrót - oczywiście nie dział -.-
+                this.Show();
+                label1.Text = "Choose addresses to test";
+                button1.Text = "TEST";
+                test_clicked = false;
+                notifyIcon1.Visible = false;
 
             }
             else
@@ -92,17 +109,14 @@ namespace client
                 label1.Text = "Choose addresses to test";
                 button1.Text = "TEST";
                 test_clicked = false;
-
             }
-            
+
         }
 
         private void groupBox1_Enter(object sender, EventArgs e)
         {
-
         }
 
-        
 
         private void Form1_Resize(object sender, EventArgs e)
         {
@@ -121,6 +135,9 @@ namespace client
         {
             this.Show();
             this.WindowState = FormWindowState.Normal;
+            label1.Text = "Choose addresses to test";
+            button1.Text = "TEST";
+            test_clicked = false;
             notifyIcon1.Visible = false;
         }
 
@@ -133,5 +150,6 @@ namespace client
         {
 
         }
+
     }
 }
