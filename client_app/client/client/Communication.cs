@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
@@ -13,11 +15,12 @@ namespace client
         public static bool SendMessage(Result obj)
         {
             //utworzenie sekretnego klucza
-            SHA256 sha256 = SHA256.Create();
-            byte[] bytes = Encoding.UTF8.GetBytes(obj.mac_address + "trochegruzu*74" + obj.ipv4 + "posolecietrche@11");
-            byte[] hash = sha256.ComputeHash(bytes);
+            var sha256 = SHA256.Create();
+            string haslo = obj.mac_address + "trochegruzu*74" + obj.ipv4 + "posolecietroche@11";
+            var bytes = Encoding.UTF8.GetBytes(haslo);
+            var hash = sha256.ComputeHash(bytes);
 
-            obj.secret.key = GetStringFromHash(hash);
+            obj.secret.key = GetStringFromHash(hash).ToLower();
 
 
             //Serializacja do JSONA
@@ -70,11 +73,9 @@ namespace client
 
         private static string GetStringFromHash(byte[] hash)
         {
-            StringBuilder result = new StringBuilder();
-            for (int i = 0; i < hash.Length; i++)
-            {
+            var result = new StringBuilder();
+            for (var i = 0; i < hash.Length; i++)
                 result.Append(hash[i].ToString("X2"));
-            }
             return result.ToString();
         }
 

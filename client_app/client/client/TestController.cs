@@ -15,15 +15,20 @@ namespace client
 
         public void Test()
         {
-            
             WebPageDownloader wbd = new WebPageDownloader();
-            int elapsedTime = wbd.TestDownload(Address);
-            
-            SeleniumTest Selenium = new SeleniumTest();
-            var x = Selenium.Test(Address, Levels);
+            int[] tab = wbd.TestDownload(Address);
 
-            var res = Message.Create(elapsedTime);
-            res.tests[0].pages_tests[0].page.page_connections = x;
+            var res = Message.Create(tab);
+
+            SeleniumTest Selenium = new SeleniumTest();
+            res.tests[0].pages_tests[0].page.page_connections = Selenium.CheckLevels(Address, Levels);
+            
+            res.tests[0].pages_tests[0].page.cookies_present = Selenium.CheckCookies();
+
+            //wywołanie destruktora
+            Selenium = null;
+
+
             Communication.SendMessage(res);
         }
 

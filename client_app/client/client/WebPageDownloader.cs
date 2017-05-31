@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Net;
+using System.Text;
 
 
 namespace client
 {
     public class WebPageDownloader
     {
-        public int TestDownload(string address)
+        /// <summary>
+        /// zwraca czas i wagę strony
+        /// </summary>
+        /// <param name="address"> adres strony</param>
+        public int[] TestDownload(string address)
         {
             WebClient client = new WebClient();
            string htmlCode;
@@ -16,7 +21,10 @@ namespace client
             watch.Stop();
 
             int elapsedMs = Convert.ToInt32(watch.ElapsedMilliseconds);
-            return elapsedMs;
+            int weight = ASCIIEncoding.Unicode.GetByteCount(htmlCode)/1024;
+            int[] tab = {elapsedMs, weight};
+
+            return tab;
 
             //Form2 f2 = new Form2();
 

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 
@@ -6,22 +7,49 @@ namespace client
 {
     public abstract class Message
     {
-        public static Result Create(int elapsedMs)
+        /// <summary>
+        /// Tworzy obiekt Result i wypełnia podstawowymi danymi
+        /// </summary>
+        /// <param name="tab">Tablica zawierająca [0] - czas pobierania, [1] - wagę strony</param>
+        /// <returns>Wypełniony obiekt</returns>
+        public static Result Create(int[] tab)
         {
-            //Stworzenie obiektów i wypełnienie danymi - to się wrzuci do osobnej metody
+            //Stworzenie obiektów i wypełnienie danymi 
             var res = Result.Initialize();
-            res.mac_address = GetMac();
-            res.tests[0].pages_tests[0].download_time = elapsedMs;
+           
+            //stworzenie URI do wyciągania adresu IP
+            Uri myUri;
+            var adr = Form1.GetAddress();
+            if (!CheckAdress.CheckAdressMethod(Form1.GetAddress()))
+               adr = CheckAdress.CorrectAdress(adr);
+            
+            myUri = new Uri(adr);
+            try
+            {
+                var ip = Dns.GetHostAddresses(myUri.Host)[0];
+                res.ipv4 = ip.ToString();
+            }
+            catch (Exception e)
+            {
+                res.ipv4 = null;
+            }
 
-            // NIE DZIAŁA! res.ipv4 = Dns.GetHostAddresses(Form1.GetAddress()).ToString();
+            //level
             res.tests[0].batch[0].levels = Form1.GetLevel();
-            res.tests[0].batch[0].page_address.address = Form1.GetAddress();
+            //adres strony
+            res.tests[0].batch[0].page_address.address = adr;
 
            // res.tests[0].pages_tests[0].page.page_connections[0].page_2.address = ;
 
-            res.tests[0].batch[0].levels = 1;
-            res.tests[0].pages_tests[0].redirection.address = "ala";
-            res.tests[0].batch[0].page_address.address = "tomekk";
+           //waga strony, czas i adres mac klienta 
+            res.tests[0].pages_tests[0].page.weight = tab[1];
+            res.tests[0].pages_tests[0].page.address = adr;
+            res.tests[0].pages_tests[0].download_time = tab[0];
+            res.mac_address = GetMac();
+
+            //przekierowanie
+            res.tests[0].pages_tests[0].redirection.address = null;
+
             //END
             return res;
         }

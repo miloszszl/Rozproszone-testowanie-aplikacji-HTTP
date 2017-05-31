@@ -18,12 +18,12 @@ namespace client
 
         public static  string GetAddress()
         {
-            return textbox1.Text;
+            return textbox.Text;
 
         }
         public static int GetLevel()
         {
-            return Convert.ToInt32(textbox.Text);
+            return Convert.ToInt32(textbox1.Text);
 
         }
         private string[] GetAddressesAndLevels()
