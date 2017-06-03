@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Net;
 using System.Text;
+using System.Threading;
+using System.Windows.Forms;
 
 
 namespace client
@@ -14,10 +16,23 @@ namespace client
         public int[] TestDownload(string address)
         {
             WebClient client = new WebClient();
-           string htmlCode;
+            string htmlCode;
 
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            htmlCode = client.DownloadString(address);
+            try
+            {
+                htmlCode = client.DownloadString(address);
+            }
+            catch (Exception e)
+            {
+                var x = new Form2();
+                x.Text = "Error!";
+                x.LabelText = e.Message + "\n Check filed address!";
+                x.Show();
+
+                return null;
+            }
+
             watch.Stop();
 
             int elapsedMs = Convert.ToInt32(watch.ElapsedMilliseconds);
@@ -25,12 +40,6 @@ namespace client
             int[] tab = {elapsedMs, weight};
 
             return tab;
-
-            //Form2 f2 = new Form2();
-
-            //test purposes
-            // f2.Show(); 
-            //  f2.LabelText = htmlCode;
         }
     }
 }

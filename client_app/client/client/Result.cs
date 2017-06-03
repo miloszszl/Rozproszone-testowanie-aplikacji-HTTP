@@ -17,6 +17,11 @@ namespace client
             this.secret = new secret();
         }
 
+
+        /// <summary>
+        /// Przygotowanie obiektu Result (dodanie aktualnej daty)
+        /// </summary>
+        /// <returns></returns>
         public static Result Initialize()
         {
             var res = new Result();

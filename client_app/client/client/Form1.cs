@@ -82,8 +82,12 @@ namespace client
                     level = Convert.ToInt32(tab[1]);
                 else
                 {
-                    Form f2 = new Form2();
-                    f2.Text = "Levels invalid!";
+                    InvalidLevel();
+                    return;
+                }
+                if (level < 1)
+                {
+                    InvalidLevel();
                     return;
                 }
 
@@ -96,7 +100,7 @@ namespace client
 
                 tc.Test();
 
-                // po teście automatyczny powrót - oczywiście nie dział -.-
+                // po teście automatyczny powrót - oczywiście nie działa -.-
                 this.Show();
                 label1.Text = "Choose addresses to test";
                 button1.Text = "TEST";
@@ -113,6 +117,19 @@ namespace client
 
         }
 
+        private void InvalidLevel()
+        {
+            var f2 = new Form2();
+            f2.Text = "Error!";
+            f2.LabelText = "Levels invalid!";
+            f2.Show();
+            this.Show();
+            label1.Text = "Choose addresses to test";
+            button1.Text = "TEST";
+            test_clicked = false;
+            notifyIcon1.Visible = false;
+            return;
+        }
         private void groupBox1_Enter(object sender, EventArgs e)
         {
         }
@@ -133,6 +150,11 @@ namespace client
 
         private void notifyIcon1_MouseClick(object sender, MouseEventArgs e)
         {
+           Escape();
+        }
+
+        public void Escape()
+        {
             this.Show();
             this.WindowState = FormWindowState.Normal;
             label1.Text = "Choose addresses to test";
@@ -140,7 +162,6 @@ namespace client
             test_clicked = false;
             notifyIcon1.Visible = false;
         }
-
         private void Form1_Load(object sender, EventArgs e)
         {
 
@@ -150,6 +171,7 @@ namespace client
         {
 
         }
+
 
     }
 }
