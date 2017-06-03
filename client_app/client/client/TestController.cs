@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 
 namespace client
@@ -19,11 +20,32 @@ namespace client
             WebPageDownloader wbd = new WebPageDownloader();
             int[] tab = wbd.TestDownload(Address);
 
+            if (tab == null)
+            {
+                return;
+            }
+
             var res = Message.Create(tab);
 
+            // zwrócenie response code ze strony 
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(res.tests[0].batch[0].page_address.address);
+            request.Method = "GET";
+            int statusCode;
+            using (var response = request.GetResponse())
+            {
+                statusCode = Convert.ToInt32(((HttpWebResponse)response).StatusCode);
+            }
+
+            res.tests[0].pages_tests[0].response_code = statusCode;
+
+            if (statusCode < 200 || statusCode > 300)
+            {
+                Communication.SendMessage(res);
+                return;
+            }
+
             SeleniumTest Selenium = new SeleniumTest(Address);
-           
-            
+
             res.tests[0].pages_tests[0].page.cookies_present = Selenium.CheckCookies();
 
             res.tests[0].pages_tests[0].page.buttons = Selenium.CheckButton();
@@ -31,8 +53,17 @@ namespace client
             //zakończenie testów Selenium
             Selenium.Close();
 
-
-            Communication.SendMessage(res);
+            try
+            {
+                Communication.SendMessage(res);
+            }
+            catch (Exception e)
+            {
+                var x = new Form2();
+                x.Text = "Error!";
+                x.LabelText = "Sending result failed! \n Try one more time";
+                x.Show();
+            }
         }
 
     }

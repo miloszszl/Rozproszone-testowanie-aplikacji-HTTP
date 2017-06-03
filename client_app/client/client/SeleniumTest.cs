@@ -68,8 +68,9 @@ namespace client
             }
             catch (Exception)
             {
-                //Jeśli strona wczytuje się dłużej jak 60 sekund - jakieś pomysły?
+               driver.Navigate().Refresh();
             }
+
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
 
             //Metody zwracają słowniki z wynikami. Można je przetwarzać w dowolny sposób. 
@@ -154,11 +155,11 @@ namespace client
 
                             if (wait.Until(ExpectedConditions.ElementToBeClickable(button)) == null)
                             {
-                                result.Add(button.Location.ToString(), false);
+                                result.Add("Tag: " + button.TagName + " Text: " + button.Text + button.Location, false);
                             }
                             else
                             {
-                                result.Add(button.Location.ToString(), true);
+                                result.Add("Tag: " + button.TagName + " Text: " + button.Text + button.Location, true);
                             }
                         }
                     }
@@ -166,7 +167,7 @@ namespace client
 
                 catch (Exception e)
                 {
-                    //TODO obsługa błędu?
+                   //Pominięcie elementu
                 }
             }
             return result;
@@ -199,19 +200,19 @@ namespace client
                 //zbieranie wszystkich linków ze strony głównej (tag <a>)
                 MainPageLinks = GetLinks(links);
                 //usuwanie wszystkich zbędnych linków 
-                MainPageLinks =  RemoveRedundantLinks(MainPageLinks);
+                MainPageLinks = RemoveRedundantLinks(MainPageLinks);
                 //dodanie linków do result
                 AddLink(MainPageLinks);
 
                 //dla kazdego linku na stronie glownej
-               for(int i = MainPageLinks.Count-1; i> 0; i--)
-               {
-                   CurrentLevel = 1;
-                   string link = MainPageLinks[i];
+                for (int i = MainPageLinks.Count - 1; i > 0; i--)
+                {
+                    CurrentLevel = 1;
+                    string link = MainPageLinks[i];
 
                     //sprawdzenie czy juz tu nie bylismy
-                   if (Visited.Contains(link))
-                       continue;
+                    if (Visited.Contains(link))
+                        continue;
 
                     if (CurrentLevel < levels)
                     {
@@ -251,11 +252,14 @@ namespace client
             }
             catch (Exception e)
             {
-                Form2 x = new Form2();
-                x.Text = "Błąd!";
-                x.LabelText = e.Message;
-                x.Show();
-                
+                Thread t2 = new Thread(delegate ()
+                {
+                    Form2 x = new Form2();
+                    x.Text = "Błąd!";
+                    x.LabelText = e.Message;
+                    x.Show();
+                });
+                t2.Start();
             }
         }
 

@@ -21,10 +21,9 @@ namespace client
             var hash = sha256.ComputeHash(bytes);
 
             obj.secret.key = GetStringFromHash(hash).ToLower();
-
-
+            
             //Serializacja do JSONA
-            var data = JsonConvert.SerializeObject(obj);
+                var data = JsonConvert.SerializeObject(obj);
 
             var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://metlando.pythonanywhere.com/api/users/");
             httpWebRequest.ContentType = "application/json";
@@ -67,8 +66,7 @@ namespace client
                 result = streamReader.ReadToEnd();
             }
             //rzutowanie JSONa na tablicę stringów
-            var rec = (Dictionary<string, string>)JsonConvert.DeserializeObject(result);
-            return rec; 
+            return (Dictionary<string, string>)JsonConvert.DeserializeObject(result);
         }
 
         private static string GetStringFromHash(byte[] hash)
