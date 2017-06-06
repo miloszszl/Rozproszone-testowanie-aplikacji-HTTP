@@ -50,7 +50,11 @@ namespace client
                 res.tests[0].pages_tests[0].page.cookies_present = Selenium.CheckCookies();
 
                 res.tests[0].pages_tests[0].page.buttons = Selenium.CheckButton();
+               
                 var z = Selenium.CheckLevels(Levels);
+                var y = z[0];
+                res.tests[0].pages_tests[0].page.page_connections = y.page.page_connections;
+                z.Remove(y);
                 foreach (var x in z)
                 {
                     res.tests[0].pages_tests.Add(x);
@@ -76,6 +80,7 @@ namespace client
                     Form2 x = new Form2();
                     x.Text = "Success!";
                     x.LabelText = "Your test result succesfully sended";
+                    x.Show();
                 }
             }
             catch (Exception e)

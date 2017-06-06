@@ -254,6 +254,7 @@ namespace client
                                 }
                                 catch (Exception e)
                                 {
+                                    driver.Navigate().GoToUrl(SubPageLinks[0]);
                                 }
                                
                                 CurrentLevel++;
