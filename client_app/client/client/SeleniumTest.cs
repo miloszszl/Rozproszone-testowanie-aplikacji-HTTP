@@ -11,7 +11,7 @@ namespace client
     {
         private IWebDriver driver;
         WebDriverWait wait;
-        private List<page_connections> ResultLink = new List<page_connections>();
+        private List<pages_tests> ResultLink = new List<pages_tests>();
         private List<string> Visited = new List<string>();
 
         public SeleniumTest(string Adress)
@@ -44,12 +44,17 @@ namespace client
         /// <param name="Adress">Adres strony</param>
         /// <param name="Levels">Poziom</param>
         /// <returns></returns>
-        public List<page_connections> CheckLevels(int Levels)
+        public List<pages_tests> CheckLevels(int Levels)
         {
 
             //sprawdzanie zagnieżdzeń
             CheckLevelsP(Levels);
-
+            for (int i= ResultLink.Count; i >0; i--)
+            {
+                var x = ResultLink[i-1].page.page_connections[0].page_2.address.ToLower();
+                if (x.Contains("javascript:") || x.Contains("void") || x.Contains("none") || x.Contains("mailto"))
+                    ResultLink.Remove(ResultLink[i]);
+            }
             return ResultLink;
         }
 
@@ -73,7 +78,7 @@ namespace client
 
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
 
-            //Metody zwracają słowniki z wynikami. Można je przetwarzać w dowolny sposób. 
+            //Metody zwracają słowniki z wynikami. 
             var buttonsChecked = Check(buttons);
             var inputChecked = Check(input);
 
@@ -216,7 +221,14 @@ namespace client
 
                     if (CurrentLevel < levels)
                     {
-                        driver.Url = link;
+                        try
+                        {
+                            driver.Url = link;
+                        }
+                        catch (Exception e)
+                        {
+                           
+                        }
                         CurrentLevel++;
                         Visited.Add(link);
 
@@ -236,7 +248,15 @@ namespace client
                             SubPageLinks = DeleteVisitedLink(SubPageLinks);
                             if (SubPageLinks != null)
                             {
-                                driver.Url = SubPageLinks[0];
+                                try
+                                {
+                                    driver.Url = SubPageLinks[0];
+                                }
+                                catch (Exception e)
+                                {
+                                    driver.Navigate().GoToUrl(SubPageLinks[0]);
+                                }
+                               
                                 CurrentLevel++;
                                 Visited.Add(driver.Url);
                                 TestOnePage(CurrentLevel, levels);
@@ -288,12 +308,15 @@ namespace client
         /// <param name="lvl"></param>
         private void AddLink(List<string> links)
         {
+            pages_tests x = new pages_tests();
             foreach (var ln in links)
             {
-                var x = new page_connections();
-                x.page_2.address = ln;
-                ResultLink.Add(x);
+                var y = new page_connections();
+                y.page_2.address = ln;
+                x.page.address = driver.Url;
+                x.page.page_connections.Add(y);
             }
+            ResultLink.Add(x);
         }
 
 
@@ -318,7 +341,14 @@ namespace client
             }
             if (!Add)
             {
-                driver.Url = ln[0];
+                try
+                {
+                    driver.Url = ln[0];
+                }
+                catch (Exception e)
+                {
+
+                }
                 curlevel++;
                 Visited.Add(driver.Url);
             }
@@ -340,6 +370,7 @@ namespace client
                 }
                 catch (Exception e)
                 {
+
                 }
                 Visited.Add(ln[0]);
                 curlevel++;
