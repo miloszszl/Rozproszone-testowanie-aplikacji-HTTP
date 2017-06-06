@@ -71,7 +71,12 @@ namespace client
 
             try
             {
-                Communication.SendMessage(res);
+                if (Communication.SendMessage(res))
+                {
+                    Form2 x = new Form2();
+                    x.Text = "Success!";
+                    x.LabelText = "Your test result succesfully sended";
+                }
             }
             catch (Exception e)
             {
