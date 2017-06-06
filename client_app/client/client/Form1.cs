@@ -100,7 +100,6 @@ namespace client
 
                 tc.Test();
 
-                // po teście automatyczny powrót - oczywiście nie działa -.-
                 this.Show();
                 label1.Text = "Choose addresses to test";
                 button1.Text = "TEST";

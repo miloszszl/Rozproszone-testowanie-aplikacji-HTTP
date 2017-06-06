@@ -61,7 +61,6 @@ namespace client
             //przekierowanie
             res.tests[0].pages_tests[0].redirection.address = null;
 
-            //END
             return res;
         }
 

@@ -45,13 +45,29 @@ namespace client
             }
 
             SeleniumTest Selenium = new SeleniumTest(Address);
+            try
+            {
+                res.tests[0].pages_tests[0].page.cookies_present = Selenium.CheckCookies();
 
-            res.tests[0].pages_tests[0].page.cookies_present = Selenium.CheckCookies();
+                res.tests[0].pages_tests[0].page.buttons = Selenium.CheckButton();
+                var z = Selenium.CheckLevels(Levels);
+                foreach (var x in z)
+                {
+                    res.tests[0].pages_tests.Add(x);
+                }
+                
+            }
+            catch (Exception e)
+            {
+                Form2 x = new Form2();
+                x.Text = "Error!";
+                x.LabelText = e.Message + "\n Selenium test failed. Please contact with administrator." +
+                              "\n \n Test result not sended.";
+                return;
+            }
 
-            res.tests[0].pages_tests[0].page.buttons = Selenium.CheckButton();
-            res.tests[0].pages_tests[0].page.page_connections = Selenium.CheckLevels(Levels);
-            //zakończenie testów Selenium
-            Selenium.Close();
+                //zakończenie testów Selenium
+                Selenium.Close();
 
             try
             {
