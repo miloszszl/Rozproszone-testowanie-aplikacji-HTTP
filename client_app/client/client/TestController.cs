@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Windows.Forms;
 
 namespace client
 {
@@ -81,14 +82,52 @@ namespace client
                 {
                     Form2 x = new Form2();
                     x.Text = "Success!";
-                    x.LabelText = "Your test result succesfully sended \n" +
-                                  " Average download time: " + avgResult[0] + " ms" +
-                                  "\n Minimum download time: " + avgResult[1]+ " ms" +
-                                  "\n Maximum download time: " + avgResult[2]+ " ms" +
-                                  "\n Global working percentage: " + avgResult[3] + "%" +
-                                  "\n Last month working percentage: " + avgResult[4] + "%" +
-                                  "\n Weight: " + res.tests[0].pages_tests[0].page.weight + " KB " +
-                                  "\n Your download time: " + res.tests[0].pages_tests[0].download_time + " ms";
+                    x.LabelText = "Your test result succesfully sended \nResults:\n";
+
+                    string[] row = { "Average download time", avgResult[0].ToString() + " ms" };
+                    var listViewItem = new ListViewItem(row);
+                    x.listView.Items.Add(listViewItem);
+
+                    row[0] = "Minimum download time";
+                    row[1] = avgResult[1].ToString() + " ms";
+                    listViewItem = new ListViewItem(row);
+                    x.listView.Items.Add(listViewItem);
+
+                    row[0] = "Maximum download time";
+                    row[1] = avgResult[2].ToString() + " ms";
+                    listViewItem = new ListViewItem(row);
+                    x.listView.Items.Add(listViewItem);
+
+                    row[0] = "Global working percentage";
+                    row[1] = avgResult[3].ToString() + " %";
+                    listViewItem = new ListViewItem(row);
+                    x.listView.Items.Add(listViewItem);
+
+                    row[0] = "Last month working percentage";
+                    row[1] = avgResult[4].ToString() + " %";
+                    listViewItem = new ListViewItem(row);
+                    x.listView.Items.Add(listViewItem);
+
+                    row[0] = "Weight";
+                    row[1] = res.tests[0].pages_tests[0].page.weight.ToString() + " kB";
+                    listViewItem = new ListViewItem(row);
+                    x.listView.Items.Add(listViewItem);
+
+                    row[0] = "Your download time";
+                    row[1] = res.tests[0].pages_tests[0].download_time.ToString() + " ms";
+                    listViewItem = new ListViewItem(row);
+                    x.listView.Items.Add(listViewItem);
+
+                    x.listView.Visible = true;
+                    
+
+                    /* " Average download time: " + avgResult[0] + " ms" +
+                     "\n Minimum download time: " + avgResult[1]+ " ms" +
+                     "\n Maximum download time: " + avgResult[2]+ " ms" +
+                     "\n Global working percentage: " + avgResult[3] + "%" +
+                     "\n Last month working percentage: " + avgResult[4] + "%" +
+                     "\n Weight: " + res.tests[0].pages_tests[0].page.weight + " KB " +
+                     "\n Your download time: " + res.tests[0].pages_tests[0].download_time + " ms";*/
 
                     x.Show();
                     

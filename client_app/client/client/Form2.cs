@@ -24,6 +24,18 @@ namespace client
             }
         }
 
+        public ListView listView
+        {
+            get
+            {
+                return this.listView1;
+            }
+            set
+            {
+                this.listView1 = value;
+            }
+        }
+
         public Form2()
         {
             InitializeComponent();
@@ -35,6 +47,11 @@ namespace client
         }
 
         private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
