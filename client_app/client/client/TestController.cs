@@ -17,6 +17,8 @@ namespace client
 
         public void Test()
         {
+            var avgResult = Communication.ReceiveMessage(Address);
+
             WebPageDownloader wbd = new WebPageDownloader();
             int[] tab = wbd.TestDownload(Address);
 
@@ -79,8 +81,15 @@ namespace client
                 {
                     Form2 x = new Form2();
                     x.Text = "Success!";
-                    x.LabelText = "Your test result succesfully sended";
+                    x.LabelText = "Your test result succesfully sended \n" +
+                                  "Average download time: " + avgResult[0] +
+                                  "\n Minimum download time: " + avgResult[1] +
+                                  "\n Maximum download time: " + avgResult[2] +
+                                  "\n Global working percentage: " + avgResult[3] +
+                                  "\n Last month working percentage: " + avgResult[4];
+
                     x.Show();
+                    
                 }
             }
             catch (Exception e)

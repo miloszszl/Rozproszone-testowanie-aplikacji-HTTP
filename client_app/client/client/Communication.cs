@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -53,11 +54,13 @@ namespace client
             return false;
         }
 
-        public static Dictionary<string,string> ReceiveMessage()
+        public static string[] ReceiveMessage(string address)
         {
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://metlando.pythonanywhere.com/api/page_for_client/"); //Musi zwracać wszystkie wyniki dla usera
+            address = address.Replace("/", "|");
+            address = address.Replace(".", "^");
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://metlando.pythonanywhere.com/api/page_for_client/"+  address); //Musi zwracać wszystkie wyniki dla usera
             httpWebRequest.ContentType = "application/json";
-            httpWebRequest.Method = "POST";
+            httpWebRequest.Method = "GET";
 
             string result;
             var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
@@ -66,7 +69,16 @@ namespace client
                 result = streamReader.ReadToEnd();
             }
             //rzutowanie JSONa na tablicę stringów
-            return (Dictionary<string, string>)JsonConvert.DeserializeObject(result);
+            var x = (JToken)(JArray)JsonConvert.DeserializeObject(result);
+            var z = x.First;
+            string[] tab = new string[5];
+            tab[0] = z.SelectToken("avg_download_time").ToString();
+            tab[1] = z.SelectToken("min_download_time").ToString();
+            tab[2] = z.SelectToken("max_download_time").ToString();
+            tab[3] = z.SelectToken("global_working_percentage").ToString();
+            tab[4] = z.SelectToken("last_month_working_percentage").ToString();
+            
+            return tab;
         }
 
         private static string GetStringFromHash(byte[] hash)
