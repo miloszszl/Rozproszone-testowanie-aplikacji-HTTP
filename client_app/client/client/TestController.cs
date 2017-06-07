@@ -82,11 +82,13 @@ namespace client
                     Form2 x = new Form2();
                     x.Text = "Success!";
                     x.LabelText = "Your test result succesfully sended \n" +
-                                  "Average download time: " + avgResult[0] +
-                                  "\n Minimum download time: " + avgResult[1] +
-                                  "\n Maximum download time: " + avgResult[2] +
-                                  "\n Global working percentage: " + avgResult[3] +
-                                  "\n Last month working percentage: " + avgResult[4];
+                                  " Average download time: " + avgResult[0] + " ms" +
+                                  "\n Minimum download time: " + avgResult[1]+ " ms" +
+                                  "\n Maximum download time: " + avgResult[2]+ " ms" +
+                                  "\n Global working percentage: " + avgResult[3] + "%" +
+                                  "\n Last month working percentage: " + avgResult[4] + "%" +
+                                  "\n Weight: " + res.tests[0].pages_tests[0].page.weight + " KB " +
+                                  "\n Your download time: " + res.tests[0].pages_tests[0].download_time + " ms";
 
                     x.Show();
                     
