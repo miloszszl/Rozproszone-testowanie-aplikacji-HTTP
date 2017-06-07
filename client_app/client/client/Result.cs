@@ -37,7 +37,7 @@ namespace client
             res.tests[0].batch.Add(x);
 
             DateTime theDate = DateTime.Now;
-            theDate.ToString("yyyy-MM-dd HH:mm");
+            theDate.ToString("yyyy-MM-dd");
             res.tests[0].date = theDate.ToString();
 
             return res;
