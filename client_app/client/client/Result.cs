@@ -40,6 +40,7 @@ namespace client
             //theDate.ToString("yyyy-MM-dd HH:mm");
             //res.tests[0].date = theDate.ToString();
             res.tests[0].date = theDate.ToString("yyyy-MM-dd HH:mm");
+
             return res;
         }
     }
