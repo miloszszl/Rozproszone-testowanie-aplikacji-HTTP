@@ -18,8 +18,7 @@ namespace client
 
         public void Test()
         {
-            var avgResult = Communication.ReceiveMessage(Address);
-
+            
             WebPageDownloader wbd = new WebPageDownloader();
             int[] tab = wbd.TestDownload(Address);
 
@@ -60,6 +59,7 @@ namespace client
                 z.Remove(y);
                 foreach (var x in z)
                 {
+                    x.is_working = true;
                     res.tests[0].pages_tests.Add(x);
                 }
                 
@@ -83,7 +83,7 @@ namespace client
                     Form2 x = new Form2();
                     x.Text = "Success!";
                     x.LabelText = "Your test result succesfully sended \nResults:\n";
-
+                    var avgResult = Communication.ReceiveMessage(Address);
                     string[] row = { "Average download time", avgResult[0].ToString() + " ms" };
                     var listViewItem = new ListViewItem(row);
                     x.listView.Items.Add(listViewItem);

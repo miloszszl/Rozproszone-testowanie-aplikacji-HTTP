@@ -49,12 +49,7 @@ namespace client
 
             //sprawdzanie zagnieżdzeń
             CheckLevelsP(Levels);
-            for (int i= ResultLink.Count; i >0; i--)
-            {
-                var x = ResultLink[i-1].page.page_connections[0].page_2.address.ToLower();
-                if (x.Contains("javascript:") || x.Contains("void") || x.Contains("none") || x.Contains("mailto"))
-                    ResultLink.Remove(ResultLink[i]);
-            }
+
             return ResultLink;
         }
 
@@ -334,7 +329,7 @@ namespace client
             {
                 driver.Navigate().Back();
                 driver.Navigate().Back();
-                curlevel -= 2;
+                curlevel -= 1;
                 if (curlevel < 0)
                     return;
                 TestOnePage(curlevel, level, false);
@@ -357,7 +352,7 @@ namespace client
             {
                 driver.Navigate().Back();
                 driver.Navigate().Back();
-                curlevel -= 2;
+                curlevel -= 1;
                 if (curlevel < 0)
                     return;
                 TestOnePage(curlevel, level, false);
