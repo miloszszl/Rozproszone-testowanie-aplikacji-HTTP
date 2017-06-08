@@ -32,7 +32,7 @@
             "global_working_percentage": 0.0,
             "last_month_working_percentage": 0.0,
             "force_test": false,
-            "weight_w_pictures": 0
+            "weight_w_pictures": 0,
             "is_working": false,
             "response_code": 0,
             "download_time": 395,

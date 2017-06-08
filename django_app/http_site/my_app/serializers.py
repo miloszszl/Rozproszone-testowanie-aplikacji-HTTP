@@ -51,7 +51,7 @@ class PageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=Page
-        fields=('address','weight','encoding','cookies_present', 'force_test','weight_w_pictures','host','page_connections','buttons')
+        fields=('address','weight','encoding','cookies_present', 'force_test','weight_w_pictures','host','page_connections','buttons','pictures_amount')
 
 
 class Page_TestSerializer(serializers.ModelSerializer):
@@ -78,7 +78,8 @@ class TestSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=Test
-        fields=('date','batch','pages_tests')
+        fields=('date','batch','pages_tests','total_time','total_weight','total_weight_w_pictures','tested_pages_amount',
+                'tested_buttons_amount','total_pictures_amount')
 
 
 class UserSerializer(serializers.ModelSerializer):
