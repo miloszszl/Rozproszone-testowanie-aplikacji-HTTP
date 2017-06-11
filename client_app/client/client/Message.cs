@@ -41,7 +41,8 @@ namespace client
             res.mac_address = GetMac();
 
             // dodanie 
-            res.tests[0].pages_tests[0].page.host.domain_name = address;
+            Uri myUri = new Uri(address);
+            res.tests[0].pages_tests[0].page.host.domain_name = myUri.Host;
 
             
             //przekierowanie

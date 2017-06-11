@@ -159,7 +159,9 @@ namespace client
                     x.page.weight = tab[1];
                     x.response_code = code;
                     x.page.host.ipv4 = Message.ipv4(x.page.address);
-                    x.page.host.domain_name = x.page.address;
+                    Uri myUri = new Uri(x.page.address);
+                    string host = myUri.Host;
+                    x.page.host.domain_name = host;
                     x.download_time = tab[0];
                     WeightAllPages += tab[1];
                     AmountOfButtons += x.page.buttons.Count;
@@ -171,8 +173,9 @@ namespace client
                     res.tests[0].pages_tests.Add(x);
                 }
 
+                res.tests[0].tested_pages_amount = AmountOfPages;
                 res.tests[0].tested_buttons_amount = AmountOfButtons;
-                res.tests[0].total_weight = WeightAllPages/1024;
+                res.tests[0].total_weight = WeightAllPages;
                 
 
             }
