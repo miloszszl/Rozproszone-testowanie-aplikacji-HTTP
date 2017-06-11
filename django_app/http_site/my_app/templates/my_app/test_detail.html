@@ -21,7 +21,7 @@
               </div>
           </div>
           <div class="row">
-            <div class="col-sm-3"><b>Total pages weight[MB]:</b></div>
+            <div class="col-sm-3"><b>Total pages weight[KB]:</b></div>
               <div class="col-sm-9">
                   {% if test.total_weight is not None %}
                     {{ test.total_weight }}
@@ -30,16 +30,16 @@
                   {% endif %}
               </div>
           </div>
-          <div class="row">
-            <div class="col-sm-3"><b>Total pages weight with pictures[MB]:</b></div>
-              <div class="col-sm-9">
-                  {% if test.total_weight_w_pictures is not None %}
-                    {{ test.total_weight_w_pictures }}
-                  {% else %}
-                    Not tested ...
-                  {% endif %}
-              </div>
-          </div>
+          <!--<div class="row">-->
+            <!--<div class="col-sm-3"><b>Total pages weight with pictures[MB]:</b></div>-->
+              <!--<div class="col-sm-9">-->
+                  <!--{% if test.total_weight_w_pictures is not None %}-->
+                    <!--{{ test.total_weight_w_pictures }}-->
+                  <!--{% else %}-->
+                    <!--Not tested ...-->
+                  <!--{% endif %}-->
+              <!--</div>-->
+          <!--</div>-->
           <div class="row">
             <div class="col-sm-3"><b>Tested pages amount :</b></div>
               <div class="col-sm-9">
@@ -93,13 +93,13 @@
     <b>Details:</b><br/>
     <div class="list-group">
         {% for pt in pages_tests%}
-            <div class="list-group-item">
+            <div class="list-group-item" style="word-wrap: break-word;">
                 <b>Tested page: </b>
                 {% if not pt.page or pt.page == "" %}
                     <span class="glyphicon glyphicon-remove text-danger"></span>
                 {% else %}
                     <a href="{% url 'page_detail' pk=pt.page.pk %}">
-                        {{pt.page.address}}
+                        {{pt.page.address|truncatechars:100}}
                     </a>
                 {% endif %}
                 <br/>
