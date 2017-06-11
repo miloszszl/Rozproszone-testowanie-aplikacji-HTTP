@@ -87,6 +87,24 @@ namespace client
 
                 var z = Selenium.CheckLevels(Levels);
                 var y = z[0];
+                foreach (var d in z)
+                {
+                    if(d != null)
+                    foreach (var x in d.page.page_connections)
+                    {
+                        if (d.page.address != null)
+                        {
+                            d.page.address = d.page.address.Replace("\"", "");
+                        }
+                        if (x != null && x.page_2.address !=null)
+                        {
+                            x.page_2.address = x.page_2.address.Replace("\"", "");
+                            x.page_2.address = x.page_2.address.Replace("]", "");
+                            x.page_2.address = x.page_2.address.Replace("}", "");
+                        }
+
+                    }
+                }
                 res.tests[0].pages_tests[0].page.page_connections = y.page.page_connections;
                 z.Remove(y);
                 int code;
@@ -146,7 +164,8 @@ namespace client
                     WeightAllPages += tab[1];
                     AmountOfButtons += x.page.buttons.Count;
                     AmountOfPages++;
-                    res.tests[0].total_pictures_amount += Selenium.TestAmountPictures(x.page.address);
+                    x.page.pictures_amount = Selenium.TestAmountPictures(x.page.address);
+                    res.tests[0].total_pictures_amount += x.page.pictures_amount;
                     res.tests[0].pages_tests.Add(x);
                 }
 

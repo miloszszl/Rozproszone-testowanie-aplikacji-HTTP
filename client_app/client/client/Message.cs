@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Net.Sockets;
 
 namespace client
 {
@@ -20,7 +21,7 @@ namespace client
             var res = Result.Initialize();
 
             res.tests[0].pages_tests[0].page.host.ipv4 = ipv4(address);
-            res.ipv4 = ipv4(address);
+            res.ipv4 = GetLocalIPAddress();
 
             //level
             res.tests[0].batch[0].levels = Form1.GetLevel();
@@ -75,6 +76,19 @@ namespace client
             {
                return  null;
             }
+        }
+
+        public static string GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            return null;
         }
     }
 }
