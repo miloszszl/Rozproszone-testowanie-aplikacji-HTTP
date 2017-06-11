@@ -76,7 +76,7 @@ namespace client
             }
             int WeightAllPages = tab[1];
             int AmountOfButtons=0;
-
+            int AmountOfPages = 1;
             SeleniumTest Selenium = new SeleniumTest(Address);
             try
             {
@@ -139,10 +139,14 @@ namespace client
                     x.page.cookies_present = Selenium.CheckCookies(x.page.address);
                     tab =  wbd.TestDownload(x.page.address);
                     x.page.weight = tab[1];
+                    x.response_code = code;
+                    x.page.host.ipv4 = Message.ipv4(x.page.address);
+                    x.page.host.domain_name = x.page.address;
                     x.download_time = tab[0];
                     WeightAllPages += tab[1];
                     AmountOfButtons += x.page.buttons.Count;
-                    res.tests[0].tested_pictures_amount += Selenium.TestAmountPictures(x.page.address);
+                    AmountOfPages++;
+                    res.tests[0].total_pictures_amount += Selenium.TestAmountPictures(x.page.address);
                     res.tests[0].pages_tests.Add(x);
                 }
 

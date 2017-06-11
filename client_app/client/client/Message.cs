@@ -18,21 +18,9 @@ namespace client
         {
             //Stworzenie obiektów i wypełnienie danymi 
             var res = Result.Initialize();
-           
-            //stworzenie URI do wyciągania adresu IP
-            Uri myUri;
-            
-            myUri = new Uri(address);
-            try
-            {
-                var ip = Dns.GetHostAddresses(myUri.Host)[0];
-                res.ipv4 = ip.ToString();
-                res.tests[0].pages_tests[0].page.host.ipv4 = ip.ToString();
-            }
-            catch (Exception e)
-            {
-                res.ipv4 = null;
-            }
+
+            res.tests[0].pages_tests[0].page.host.ipv4 = ipv4(address);
+            res.ipv4 = ipv4(address);
 
             //level
             res.tests[0].batch[0].levels = Form1.GetLevel();
@@ -69,6 +57,24 @@ namespace client
                 select nic.GetPhysicalAddress().ToString()
             ).FirstOrDefault();
 
+        }
+
+        public static string ipv4(string address)
+        {
+
+            //stworzenie URI do wyciągania adresu IP
+            Uri myUri;
+
+            myUri = new Uri(address);
+            try
+            {
+                var ip = Dns.GetHostAddresses(myUri.Host)[0];
+                return ip.ToString();
+            }
+            catch (Exception e)
+            {
+               return  null;
+            }
         }
     }
 }
