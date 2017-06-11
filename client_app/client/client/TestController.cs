@@ -172,7 +172,7 @@ namespace client
                 }
 
                 res.tests[0].tested_buttons_amount = AmountOfButtons;
-                res.tests[0].total_weight = WeightAllPages;
+                res.tests[0].total_weight = WeightAllPages/1024;
                 
 
             }
