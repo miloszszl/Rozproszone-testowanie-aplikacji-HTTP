@@ -164,6 +164,8 @@ namespace client
                     WeightAllPages += tab[1];
                     AmountOfButtons += x.page.buttons.Count;
                     AmountOfPages++;
+                    x.page.host.domain_name = x.page.address;
+                    x.page.host.ipv4 = Message.ipv4(x.page.address);
                     x.page.pictures_amount = Selenium.TestAmountPictures(x.page.address);
                     res.tests[0].total_pictures_amount += x.page.pictures_amount;
                     res.tests[0].pages_tests.Add(x);
@@ -239,7 +241,7 @@ namespace client
                     listViewItem = new ListViewItem(row);
                     x.listView.Items.Add(listViewItem);
 
-                    row[0] = "All links";
+                    row[0] = "All tested pages";
                     row[1] = res.tests[0].pages_tests.Count.ToString();
                     listViewItem = new ListViewItem(row);
                     x.listView.Items.Add(listViewItem);
