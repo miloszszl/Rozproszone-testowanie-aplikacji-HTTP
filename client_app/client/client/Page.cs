@@ -13,6 +13,7 @@ namespace client
         public double last_month_working_percentage { get; set; }
         public bool force_test { get; set; }
         public int weight_w_pictures { get; set; }
+        public int pictures_amount { get; set; }
         public host host;
         public List<page_connections> page_connections;
         public List<buttons> buttons;

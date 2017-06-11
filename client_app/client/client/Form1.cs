@@ -91,11 +91,6 @@ namespace client
                     return;
                 }
 
-                //sprawdzenie poprawności adresu
-                if (!CheckAdress.CheckAdressMethod(tab[0]))
-                {
-                    tab[0]= CheckAdress.CorrectAdress(tab[0]);
-                }
                 TestController tc = new TestController(tab[0],level);
 
                 tc.Test();
