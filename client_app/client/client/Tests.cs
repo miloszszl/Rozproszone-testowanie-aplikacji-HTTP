@@ -7,7 +7,7 @@ namespace client
     {
         public string date { get; set; }
         public int total_time { get; set; }
-        public int total_weight { get; set; }
+        public double total_weight { get; set; }
         public int total_weight_w_pictures { get; set; }
         public int tested_pages_amount { get; set; }
         public int tested_buttons_amount { get; set; }
