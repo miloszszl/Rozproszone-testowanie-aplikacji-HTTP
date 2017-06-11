@@ -133,8 +133,7 @@ class UserSerializer(serializers.ModelSerializer):
                                 redirection_data=pt_data.pop('redirection', None)
 
                                 pt_obj = Page_Test.objects.create(test=t_obj, redirection=None, **pt_data)
-                                if page_data is not None and page_data.get('domain_name',None) is not None and\
-                                        page_data.get('domain_name',None)!="":
+                                if page_data is not None :#and page_data.get('domain_name',None) is not None and page_data.get('domain_name',None)!="":
                                     host_data=page_data.pop('host', None)
 
                                     ph_obj=None
