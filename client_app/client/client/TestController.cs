@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 using System.Net;
 using System.Windows.Forms;
+using OpenQA.Selenium.Remote;
 
 namespace client
 {
@@ -18,16 +21,42 @@ namespace client
 
         public void Test()
         {
-            
-            WebPageDownloader wbd = new WebPageDownloader();
-            int[] tab = wbd.TestDownload(Address);
+            var watch = System.Diagnostics.Stopwatch.StartNew();
 
+            WebPageDownloader wbd = new WebPageDownloader();
+
+            int[] tab = null;
+            try
+            {
+                tab = wbd.TestDownload(Address);
+            }
+            catch (Exception e)
+            {
+                //sprawdzenie poprawności adresu
+                if (!CheckAdress.CheckAdressMethod(Address))
+                {
+                    Address = CheckAdress.CorrectAdress(Address);
+                }
+               
+            }
+            try
+            {
+                tab = wbd.TestDownload(Address);
+            }
+            catch (Exception e)
+            {
+                var x = new Form2();
+                x.Text = "Error!";
+                x.LabelText = e.Message + "\n Check filed address!";
+                x.Show();
+            }
+          
             if (tab == null)
             {
                 return;
             }
 
-            var res = Message.Create(tab);
+            var res = Message.Create(tab,Address);
 
             // zwrócenie response code ze strony 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(res.tests[0].batch[0].page_address.address);
@@ -45,6 +74,8 @@ namespace client
                 Communication.SendMessage(res);
                 return;
             }
+            int WeightAllPages = tab[1];
+            int AmountOfButtons=0;
 
             SeleniumTest Selenium = new SeleniumTest(Address);
             try
@@ -52,17 +83,73 @@ namespace client
                 res.tests[0].pages_tests[0].page.cookies_present = Selenium.CheckCookies();
 
                 res.tests[0].pages_tests[0].page.buttons = Selenium.CheckButton();
-               
+                AmountOfButtons = res.tests[0].pages_tests[0].page.buttons.Count;
+
                 var z = Selenium.CheckLevels(Levels);
                 var y = z[0];
                 res.tests[0].pages_tests[0].page.page_connections = y.page.page_connections;
                 z.Remove(y);
+                int code;
+                HttpWebRequest req;
+                request.Method = "GET";
+                for (int i = z.Count - 1; i > 0; i--)
+                {
+                   string u;
+                    try
+                    {
+                        u = z[i].page.address.ToLower();
+
+                    }
+                    catch (Exception e)
+                    {
+                        z.Remove(z[i]);
+                        continue;
+                    }                 
+                    if (u == null || u.Contains("none")  || u.Contains("mailto") || u.Contains("javascript:"))
+                        z.Remove(z[i]);
+                }
                 foreach (var x in z)
                 {
-                    x.is_working = true;
+                    try
+                    {
+                        req = (HttpWebRequest)WebRequest.Create(x.page.address);
+                        using (var resp = req.GetResponse())
+                        {
+                            code = Convert.ToInt32(((HttpWebResponse)resp).StatusCode);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        x.is_working = false;
+                        continue;
+                    }
+                    
+                    if (code >= 200 && code < 300)
+                    {
+                        x.is_working = true;
+                    }
+                    else
+                    {
+                        x.is_working = false;
+                        continue;
+                    }
+                    x.response_code = code;
+
+                    x.page.buttons = Selenium.CheckButton(x.page.address);
+                    x.page.cookies_present = Selenium.CheckCookies(x.page.address);
+                    tab =  wbd.TestDownload(x.page.address);
+                    x.page.weight = tab[1];
+                    x.download_time = tab[0];
+                    WeightAllPages += tab[1];
+                    AmountOfButtons += x.page.buttons.Count;
+                    res.tests[0].tested_pictures_amount += Selenium.TestAmountPictures(x.page.address);
                     res.tests[0].pages_tests.Add(x);
                 }
+
+                res.tests[0].tested_buttons_amount = AmountOfButtons;
+                res.tests[0].total_weight = WeightAllPages;
                 
+
             }
             catch (Exception e)
             {
@@ -70,12 +157,18 @@ namespace client
                 x.Text = "Error!";
                 x.LabelText = e.Message + "\n Selenium test failed. Please contact with administrator." +
                               "\n \n Test result not sended.";
+                x.Show();
                 return;
             }
 
                 //zakończenie testów Selenium
                 Selenium.Close();
-
+                watch.Stop();
+                int elapsedSec = Convert.ToInt32(watch.ElapsedMilliseconds)/1000;
+                res.tests[0].total_time = elapsedSec;
+                
+                //res.tests[0].total_weight_w_pictures =
+            
             try
             {
                 if (Communication.SendMessage(res))
@@ -118,17 +211,30 @@ namespace client
                     listViewItem = new ListViewItem(row);
                     x.listView.Items.Add(listViewItem);
 
+                    row[0] = "Test time";
+                    row[1] = elapsedSec.ToString() + "sec";
+                    listViewItem = new ListViewItem(row);
+                    x.listView.Items.Add(listViewItem);
+
+                    row[0] = "All links";
+                    row[1] = res.tests[0].pages_tests.Count.ToString();
+                    listViewItem = new ListViewItem(row);
+                    x.listView.Items.Add(listViewItem);
+
+                    row[0] = "Weight of all pages";
+                    row[1] = WeightAllPages.ToString();
+                    listViewItem = new ListViewItem(row);
+                    x.listView.Items.Add(listViewItem);
+
+                    row[0] = "Amount of buttons";
+                    row[1] = AmountOfButtons.ToString();
+                    listViewItem = new ListViewItem(row);
+                    x.listView.Items.Add(listViewItem);
+
+
+
                     x.listView.Visible = true;
                     
-
-                    /* " Average download time: " + avgResult[0] + " ms" +
-                     "\n Minimum download time: " + avgResult[1]+ " ms" +
-                     "\n Maximum download time: " + avgResult[2]+ " ms" +
-                     "\n Global working percentage: " + avgResult[3] + "%" +
-                     "\n Last month working percentage: " + avgResult[4] + "%" +
-                     "\n Weight: " + res.tests[0].pages_tests[0].page.weight + " KB " +
-                     "\n Your download time: " + res.tests[0].pages_tests[0].download_time + " ms";*/
-
                     x.Show();
                     
                 }
@@ -141,6 +247,7 @@ namespace client
                 x.Show();
             }
         }
+
 
     }
 }

@@ -25,12 +25,7 @@ namespace client
             }
             catch (Exception e)
             {
-                var x = new Form2();
-                x.Text = "Error!";
-                x.LabelText = e.Message + "\n Check filed address!";
-                x.Show();
-
-                return null;
+               throw new Exception();
             }
 
             watch.Stop();

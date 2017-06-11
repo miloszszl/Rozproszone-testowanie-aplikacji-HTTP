@@ -54,8 +54,13 @@ namespace client
         }
 
 
-        public List<buttons> CheckButton()
+        public List<buttons> CheckButton(string address = "")
         {
+
+            if (!address.Equals(""))
+            {
+                driver.Navigate().GoToUrl(address);
+            }
 
             IReadOnlyCollection<IWebElement> buttons = null;
             IReadOnlyCollection<IWebElement> input = null;
@@ -107,8 +112,12 @@ namespace client
         /// Sprawdzenie używania ciasteczek
         /// </summary>
         /// <returns></returns>
-        public bool CheckCookies()
+        public bool CheckCookies(string address = "")
         {
+            if (!address.Equals(""))
+            {
+                driver.Navigate().GoToUrl(address);
+            }
             //sprawdzenie używania ciasteczek
             var cookies = driver.Manage().Cookies.AllCookies.Count;
             if (cookies != 0 && cookies != null)
@@ -116,6 +125,12 @@ namespace client
             return false;
         }
 
+        public int TestAmountPictures(string address)
+        {
+            driver.Navigate().GoToUrl(address);
+            var pictures = driver.FindElements(By.XPath("//img"));
+            return pictures.Count;
+        }
 
         /// <summary>
         /// Metoda sprawdzająca czy elementy są klikalne.
