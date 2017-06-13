@@ -19,7 +19,7 @@ namespace client
         {
             if (adr.StartsWith("www"))
                 return "http://" + adr;
-            if (adr.StartsWith("http://"))
+            if (adr.StartsWith("http://") || adr.StartsWith("https://"))
                 return adr.Insert(7, "www.");
             return "http://www." + adr;
         }

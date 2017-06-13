@@ -32,12 +32,19 @@ namespace client
             }
             catch (Exception e)
             {
-                //sprawdzenie poprawności adresu
-                if (!CheckAdress.CheckAdressMethod(Address))
+                try
                 {
-                    Address = CheckAdress.CorrectAdress(Address);
+                    Address = "http://" + Address;
+                    wbd.TestDownload(Address);
                 }
-               
+                catch (Exception)
+                {
+                    //sprawdzenie poprawności adresu
+                    if (!CheckAdress.CheckAdressMethod(Address))
+                    {
+                        Address = CheckAdress.CorrectAdress(Address);
+                    }
+                }               
             }
             try
             {
@@ -84,8 +91,8 @@ namespace client
 
                 res.tests[0].pages_tests[0].page.buttons = Selenium.CheckButton();
                 AmountOfButtons = res.tests[0].pages_tests[0].page.buttons.Count;
-
-                var z = Selenium.CheckLevels(Levels);
+                res.tests[0].pages_tests[0].page.pictures_amount = Selenium.TestAmountPictures(Address);
+               var z = Selenium.CheckLevels(Levels);
                 var y = z[0];
                 foreach (var d in z)
                 {
@@ -159,14 +166,16 @@ namespace client
                     x.page.weight = tab[1];
                     x.response_code = code;
                     x.page.host.ipv4 = Message.ipv4(x.page.address);
+
                     Uri myUri = new Uri(x.page.address);
                     string host = myUri.Host;
                     x.page.host.domain_name = host;
+
                     x.download_time = tab[0];
                     WeightAllPages += tab[1];
                     AmountOfButtons += x.page.buttons.Count;
                     AmountOfPages++;
-                    x.page.host.domain_name = x.page.address;
+                    x.page.host.domain_name = host;
                     x.page.host.ipv4 = Message.ipv4(x.page.address);
                     x.page.pictures_amount = Selenium.TestAmountPictures(x.page.address);
                     res.tests[0].total_pictures_amount += x.page.pictures_amount;
@@ -262,9 +271,11 @@ namespace client
 
 
                     x.listView.Visible = true;
+                    x.TopLevel = true;
                     
                     x.Show();
-                    
+                    x.TopMost = true;
+
                 }
             }
             catch (Exception e)
@@ -272,6 +283,7 @@ namespace client
                 var x = new Form2();
                 x.Text = "Error!";
                 x.LabelText = "Sending result failed! \n Try one more time";
+                
                 x.Show();
             }
         }
