@@ -84,6 +84,7 @@ namespace client
             int WeightAllPages = tab[1];
             int AmountOfButtons=0;
             int AmountOfPages = 1;
+
             SeleniumTest Selenium = new SeleniumTest(Address);
             try
             {
@@ -92,6 +93,7 @@ namespace client
                 res.tests[0].pages_tests[0].page.buttons = Selenium.CheckButton();
                 AmountOfButtons = res.tests[0].pages_tests[0].page.buttons.Count;
                 res.tests[0].pages_tests[0].page.pictures_amount = Selenium.TestAmountPictures(Address);
+                res.tests[0].total_pictures_amount = res.tests[0].pages_tests[0].page.pictures_amount;
                var z = Selenium.CheckLevels(Levels);
                 var y = z[0];
                 foreach (var d in z)
@@ -219,37 +221,37 @@ namespace client
                     x.listView.Items.Add(listViewItem);
 
                     row[0] = "Minimum download time";
-                    row[1] = avgResult[1].ToString() + " ms";
+                    row[1] = avgResult[1] + " ms";
                     listViewItem = new ListViewItem(row);
                     x.listView.Items.Add(listViewItem);
 
                     row[0] = "Maximum download time";
-                    row[1] = avgResult[2].ToString() + " ms";
+                    row[1] = avgResult[2] + " ms";
                     listViewItem = new ListViewItem(row);
                     x.listView.Items.Add(listViewItem);
 
                     row[0] = "Global working percentage";
-                    row[1] = avgResult[3].ToString() + " %";
+                    row[1] = avgResult[3] + " %";
                     listViewItem = new ListViewItem(row);
                     x.listView.Items.Add(listViewItem);
 
                     row[0] = "Last month working percentage";
-                    row[1] = avgResult[4].ToString() + " %";
+                    row[1] = avgResult[4] + " %";
                     listViewItem = new ListViewItem(row);
                     x.listView.Items.Add(listViewItem);
 
                     row[0] = "Weight";
-                    row[1] = res.tests[0].pages_tests[0].page.weight.ToString() + " kB";
+                    row[1] = res.tests[0].pages_tests[0].page.weight + " kB";
                     listViewItem = new ListViewItem(row);
                     x.listView.Items.Add(listViewItem);
 
                     row[0] = "Your download time";
-                    row[1] = res.tests[0].pages_tests[0].download_time.ToString() + " ms";
+                    row[1] = res.tests[0].pages_tests[0].download_time + " ms";
                     listViewItem = new ListViewItem(row);
                     x.listView.Items.Add(listViewItem);
 
                     row[0] = "Test time";
-                    row[1] = elapsedSec.ToString() + "sec";
+                    row[1] = elapsedSec + "sec";
                     listViewItem = new ListViewItem(row);
                     x.listView.Items.Add(listViewItem);
 
@@ -259,7 +261,12 @@ namespace client
                     x.listView.Items.Add(listViewItem);
 
                     row[0] = "Weight of all pages";
-                    row[1] = WeightAllPages.ToString();
+                    row[1] = WeightAllPages + " KB";
+                    listViewItem = new ListViewItem(row);
+                    x.listView.Items.Add(listViewItem);
+
+                    row[0] = "All pictures";
+                    row[1] = res.tests[0].total_pictures_amount.ToString();
                     listViewItem = new ListViewItem(row);
                     x.listView.Items.Add(listViewItem);
 
